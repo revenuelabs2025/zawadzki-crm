@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lejek Sprzedażowy - Kanban</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the application */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .brand-accent {
+            background-color: #E30613;
+            color: white;
+        }
+        .brand-accent-text {
+            color: #E30613;
+        }
+        .kanban-container {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #d1d5db #f8f9fa;
+        }
+        .kanban-container::-webkit-scrollbar {
+            height: 8px;
+        }
+        .kanban-container::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+        .kanban-container::-webkit-scrollbar-thumb {
+            background-color: #d1d5db;
+            border-radius: 10px;
+            border: 2px solid #f8f9fa;
+        }
+        .kanban-column {
+            width: 320px;
+            min-width: 320px;
+            max-width: 320px;
+        }
+        .card-dragging {
+            transform: rotate(3deg);
+            opacity: 0.8;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .drag-over {
+            background-color: #eef2ff;
+            border: 2px dashed #c7d2fe;
+        }
+        .tooltip {
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .has-tooltip:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+        .toast {
+            visibility: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease-in-out;
+        }
+        .toast.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Modal styles */
+        #deal-modal {
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        #deal-modal.show {
+            opacity: 1;
+        }
+        #deal-modal #modal-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease-in-out;
+        }
+        #deal-modal.show #modal-content {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Active nav link style */
+        .nav-link.active {
+            background-color: #fee2e2; /* red-100 */
+            color: #E30613; /* brand-accent-text */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="flex h-screen">
+        <!-- Collapsed Sidebar -->
+        <aside class="bg-white w-20 flex flex-col items-center py-4 shadow-md z-20">
+            <div class="w-12 h-12 mb-8 flex items-center justify-center rounded-lg bg-gray-100">
+                 <svg class="w-8 h-8 brand-accent-text" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            </div>
+            <nav class="flex flex-col space-y-4">
+                <a href="#" id="contacts-link" class="nav-link p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Kontakty"><i class="fas fa-address-book fa-lg"></i></a>
+                <a href="#" id="kanban-link" class="nav-link p-3 rounded-lg text-gray-600 hover:bg-gray-200 active" title="Deale (Kanban)"><i class="fas fa-project-diagram fa-lg"></i></a>
+                <a href="#" class="nav-link p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Pulpity"><i class="fas fa-tachometer-alt fa-lg"></i></a>
+                <a href="#" class="nav-link p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Ustawienia"><i class="fas fa-cog fa-lg"></i></a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-y-hidden">
+            <!-- Top Toolbar -->
+            <header class="bg-white p-4 border-b border-gray-200 flex items-center justify-between flex-wrap z-10">
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" placeholder="Szukaj kontaktów, projektów..." class="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-sm font-medium text-gray-600">Filtry:</span>
+                        <button class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">Typ <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                        <button class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300">Status <i class="fas fa-chevron-down ml-1 text-xs"></i></button>
+                    </div>
+                </div>
+                <button id="add-new-button" class="brand-accent hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span id="add-new-btn-text">Nowy deal</span>
+                </button>
+            </header>
+
+            <!-- Views Container -->
+            <div class="flex-1 overflow-y-auto">
+                <!-- Kanban Board View -->
+                <div id="kanban-view" class="p-4 lg:p-6">
+                    <div id="kanban-board" class="kanban-container">
+                        <!-- Columns will be dynamically generated here -->
+                    </div>
+                </div>
+
+                <!-- Contacts View -->
+                <div id="contacts-view" class="hidden p-4 lg:p-6">
+                    <h1 class="text-2xl font-bold text-gray-800 mb-6">Baza kontaktów</h1>
+                    <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imię i nazwisko</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Firma</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kontakt</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Typ</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ostatnia aktywność</th>
+                                </tr>
+                            </thead>
+                            <tbody id="contacts-table-body" class="bg-white divide-y divide-gray-200">
+                                <!-- Contact rows will be dynamically generated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Single Deal Modal -->
+    <div id="deal-modal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-40 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div id="modal-content" class="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-full max-h-[90vh] flex flex-col transform transition-all opacity-0 -translate-y-10 duration-300">
+            <!-- Modal Header -->
+            <div class="p-5 border-b border-gray-200 flex justify-between items-center flex-shrink-0">
+                <h2 id="modal-projectName" class="text-2xl font-bold text-gray-800"></h2>
+                <button id="modal-close-btn" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times fa-2x"></i>
+                </button>
+            </div>
+    
+            <!-- Modal Body -->
+            <div class="flex-1 p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Left Column: Details -->
+                <div class="md:col-span-1 flex flex-col space-y-6">
+                     <!-- Deal Stage -->
+                    <div>
+                        <label for="modal-stage" class="text-sm font-medium text-gray-500">Etap</label>
+                        <select id="modal-stage" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md"></select>
+                    </div>
+                    <!-- Deal Value -->
+                    <div>
+                        <label for="modal-value" class="text-sm font-medium text-gray-500">Wartość netto</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <input type="number" id="modal-value" class="focus:ring-red-500 focus:border-red-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-gray-500 sm:text-sm">PLN</span>
+                            </div>
+                        </div>
+                    </div>
+                     <!-- Probability -->
+                    <div>
+                        <label for="modal-probability" class="text-sm font-medium text-gray-500">Prawdopodobieństwo</label>
+                        <select id="modal-probability" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md"></select>
+                    </div>
+                    <!-- Key Info -->
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <h4 class="font-semibold text-gray-800 mb-3">Kluczowe informacje</h4>
+                        <dl class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <dt class="text-sm text-gray-500">Klient</dt>
+                                <dd id="modal-company" class="text-sm font-medium text-gray-900 text-right"></dd>
+                            </div>
+                             <div class="flex justify-between items-center">
+                                <dt class="text-sm text-gray-500">Technologia</dt>
+                                <dd id="modal-roofTech" class="text-sm font-medium text-gray-900 text-right"></dd>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <dt class="text-sm text-gray-500">Powierzchnia</dt>
+                                <dd id="modal-areaM2" class="text-sm font-medium text-gray-900 text-right"></dd>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <dt class="text-sm text-gray-500">Data otwarcia</dt>
+                                <dd id="modal-openDate" class="text-sm font-medium text-gray-900"></dd>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <dt class="text-sm text-gray-500">Spodz. zamknięcie</dt>
+                                <dd id="modal-expectedClose" class="text-sm font-medium text-gray-900"></dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+    
+                <!-- Right Column: Activity -->
+                <div class="md:col-span-2">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Aktywności</h3>
+                    <!-- Add new activity -->
+                    <div class="mb-6">
+                        <textarea id="new-activity-input" rows="3" class="w-full p-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500" placeholder="Dodaj notatkę lub zapisz aktywność..."></textarea>
+                        <div class="flex justify-end mt-2">
+                             <button id="save-activity-btn" class="brand-accent hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center space-x-2">
+                                <i class="fas fa-paper-plane"></i>
+                                <span>Zapisz</span>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Activity Feed -->
+                    <div id="modal-activity-feed" class="space-y-6">
+                        <!-- Activity items will be injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-5 rounded-lg shadow-lg flex items-center space-x-3 z-50">
+        <i class="fas fa-check-circle text-green-400"></i>
+        <span id="toast-message"></span>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- DATA ---
+        const stages = [
+            { id: 'analiza', name: 'Analiza techniczna', color: 'blue' },
+            { id: 'kosztorys', name: 'Wstępny kosztorys', color: 'teal' },
+            { id: 'oferta', name: 'Oferta handlowa wysłana', color: 'purple' },
+            { id: 'negocjacje', name: 'Negocjacje / rewizje', color: 'orange' },
+            { id: 'wstrzymane', name: 'Wstrzymane', color: 'gray' },
+            { id: 'wygrane', name: 'Wygrane', color: 'green' },
+            { id: 'przegrane', name: 'Przegrane', color: 'red' },
+        ];
+
+        let deals = [
+            { id: 1, stage: 'analiza', projectName: 'Nowy dach dla Biedronki', company: 'Jeronimo Martins Polska S.A.', roofTech: 'PVC', areaM2: 2500, valueNet: 750000, probability: 80, openDate: '2025-06-15', expectedClose: '2025-08-30' },
+            { id: 2, stage: 'analiza', projectName: 'Hala produkcyjna Panattoni', company: 'Panattoni Development Europe', roofTech: 'Stalowa obudowa', areaM2: 12000, valueNet: 4800000, probability: 65, openDate: '2025-06-20', expectedClose: '2025-09-15' },
+            { id: 3, stage: 'analiza', projectName: 'Renowacja dachu biurowca', company: 'Skanska Property Poland', roofTech: 'Bitumen', areaM2: 1800, valueNet: 450000, probability: 75, openDate: '2025-07-01', expectedClose: '2025-08-20' },
+            { id: 4, stage: 'kosztorys', projectName: 'Zielony dach na osiedlu', company: 'Dom Development S.A.', roofTech: 'Zielony', areaM2: 3200, valueNet: 1200000, probability: 50, openDate: '2025-05-10', expectedClose: '2025-07-30' },
+            { id: 5, stage: 'kosztorys', projectName: 'Magazyn Amazon', company: 'Amazon Fulfillment Poland', roofTech: 'TPO', areaM2: 25000, valueNet: 9500000, probability: 60, openDate: '2025-05-25', expectedClose: '2025-08-10' },
+            { id: 6, stage: 'oferta', projectName: 'Modernizacja centrum handlowego', company: 'ECE Projektmanagement Polska', roofTech: 'EPDM', areaM2: 8500, valueNet: 3200000, probability: 40, openDate: '2025-04-15', expectedClose: '2025-07-25' },
+            { id: 7, stage: 'oferta', projectName: 'Dach na nowej szkole', company: 'Urząd Miasta Łodzi', roofTech: 'PVC', areaM2: 4000, valueNet: 1500000, probability: 35, openDate: '2025-04-30', expectedClose: '2025-08-05' },
+            { id: 8, stage: 'negocjacje', projectName: 'Fabryka LG Chem', company: 'LG Energy Solution Wrocław', roofTech: 'Stalowa obudowa', areaM2: 15000, valueNet: 6200000, probability: 70, openDate: '2025-03-01', expectedClose: '2025-07-15' },
+            { id: 9, stage: 'negocjacje', projectName: 'Biurowiec "Varso Tower"', company: 'HB Reavis', roofTech: 'Inne', areaM2: 5000, valueNet: 2800000, probability: 65, openDate: '2025-03-20', expectedClose: '2025-07-20' },
+            { id: 10, stage: 'wstrzymane', projectName: 'Projekt hotelu Gołębiewski', company: 'Tadeusz Gołębiewski', roofTech: 'Bitumen', areaM2: 9000, valueNet: 3500000, probability: 20, openDate: '2024-11-10', expectedClose: '2025-09-01' },
+            { id: 11, stage: 'wygrane', projectName: 'Centrum Dystrybucyjne Lidl', company: 'Lidl Polska', roofTech: 'TPO', areaM2: 18000, valueNet: 7200000, probability: 100, openDate: '2025-01-05', expectedClose: '2025-05-30' },
+            { id: 12, stage: 'wygrane', projectName: 'Osiedle "Nowa Papiernia"', company: 'RED Real Estate Development', roofTech: 'Zielony', areaM2: 2200, valueNet: 980000, probability: 100, openDate: '2025-02-12', expectedClose: '2025-06-10' },
+            { id: 13, stage: 'przegrane', projectName: 'Renowacja dachu PKiN', company: 'Zarząd Pałacu Kultury i Nauki', roofTech: 'PVC', areaM2: 6000, valueNet: 2100000, probability: 0, openDate: '2025-02-01', expectedClose: '2025-06-01' },
+        ];
+        
+        const contacts = [
+            { id: 1, name: 'Adam Nowak', company: 'Jeronimo Martins Polska S.A.', phone: '501 123 456', email: 'a.nowak@jm.pl', address: 'ul. Żniwna 5, 62-025 Kostrzyn', type: 'Klient', status: 'Aktywny', lastActivity: '2025-07-01' },
+            { id: 2, name: 'Ewa Kowalska', company: 'Panattoni Development Europe', phone: '602 234 567', email: 'ewa.kowalska@panattoni.com', address: 'Plac Europejski 1, 00-844 Warszawa', type: 'Klient', status: 'Aktywny', lastActivity: '2025-06-28' },
+            { id: 3, name: 'Piotr Wiśniewski', company: 'Dachy i Fasady Sp. z o.o.', phone: '703 345 678', email: 'piotr@dachy-fasady.pl', address: 'ul. Przemysłowa 10, 95-100 Zgierz', type: 'Podwykonawca', status: 'Aktywny', lastActivity: '2025-06-25' },
+            { id: 4, name: 'Katarzyna Dąbrowska', company: 'Bud-Mat', phone: '804 456 789', email: 'k.dabrowska@budmat.com', address: 'ul. Otolińska 25, 09-407 Płock', type: 'Dostawca', status: 'Nowy', lastActivity: '2025-07-02' },
+            { id: 5, name: 'Tomasz Zieliński', company: 'Inwestor Prywatny', phone: '505 567 890', email: 't.zielinski@poczta.pl', address: 'ul. Piotrkowska 1, 90-001 Łódź', type: 'Potencjalny klient', status: 'Nowy', lastActivity: '2025-06-30' },
+            { id: 6, name: 'Marek Jankowski', company: 'Global Build', phone: '606 678 901', email: 'm.jankowski@globalbuild.com', address: 'ul. Wrocławska 54, 50-001 Wrocław', type: 'Potencjalny klient', status: 'Zdyskwalifikowany', lastActivity: '2025-05-15' },
+        ];
+
+        const activities = {
+            1: [
+                { type: 'note', user: 'Jan Kowalski', text: 'Klient prosi o aktualizację kosztorysu z uwzględnieniem świetlików.', timestamp: '2025-07-01 14:30' },
+                { type: 'stage-change', user: 'System', text: 'Etap zmieniony na "Analiza techniczna"', timestamp: '2025-06-15 09:00' }
+            ],
+            8: [
+                { type: 'call', user: 'Anna Nowak', text: 'Rozmowa telefoniczna z p. dyrektorem. Przesłać finalną wersję umowy do piątku.', timestamp: '2025-07-02 11:15' },
+                { type: 'email', user: 'Anna Nowak', text: 'Wysłano zrewidowaną ofertę.', timestamp: '2025-06-28 16:05' },
+                { type: 'stage-change', user: 'System', text: 'Etap zmieniony na "Negocjacje / rewizje"', timestamp: '2025-06-25 10:00' }
+            ]
+        };
+        
+        const activityIcons = {
+            note: { icon: 'fa-sticky-note', color: 'text-yellow-500' },
+            call: { icon: 'fa-phone', color: 'text-blue-500' },
+            email: { icon: 'fa-envelope', color: 'text-indigo-500' },
+            'stage-change': { icon: 'fa-flag', color: 'text-gray-500' }
+        };
+
+        // --- DOM ELEMENTS ---
+        const board = document.getElementById('kanban-board');
+        const dealModal = document.getElementById('deal-modal');
+        const closeModalBtn = document.getElementById('modal-close-btn');
+        const kanbanView = document.getElementById('kanban-view');
+        const contactsView = document.getElementById('contacts-view');
+        const kanbanLink = document.getElementById('kanban-link');
+        const contactsLink = document.getElementById('contacts-link');
+        const addNewButton = document.getElementById('add-new-button');
+        const addNewBtnText = document.getElementById('add-new-btn-text');
+        const newActivityInput = document.getElementById('new-activity-input');
+        const saveActivityButton = document.getElementById('save-activity-btn');
+
+
+        // --- CONFIG ---
+        const techIcons = {
+            'PVC': 'fa-layer-group', 'TPO': 'fa-clone', 'EPDM': 'fa-grip-horizontal',
+            'Bitumen': 'fa-burn', 'Zielony': 'fa-leaf', 'Stalowa obudowa': 'fa-industry', 'Inne': 'fa-question-circle'
+        };
+        const stageColors = {
+            blue: { bg: 'bg-blue-100', text: 'text-blue-800' }, teal: { bg: 'bg-teal-100', text: 'text-teal-800' },
+            purple: { bg: 'bg-purple-100', text: 'text-purple-800' }, orange: { bg: 'bg-orange-100', text: 'text-orange-800' },
+            gray: { bg: 'bg-gray-200', text: 'text-gray-800' }, green: { bg: 'bg-green-100', text: 'text-green-800' },
+            red: { bg: 'bg-red-100', text: 'text-red-800' },
+        };
+        const contactTypeColors = {
+            'Klient': 'bg-blue-100 text-blue-800',
+            'Potencjalny klient': 'bg-yellow-100 text-yellow-800',
+            'Podwykonawca': 'bg-purple-100 text-purple-800',
+            'Dostawca': 'bg-indigo-100 text-indigo-800',
+        };
+        const statusColors = {
+            'Nowy': 'bg-green-100 text-green-800',
+            'Aktywny': 'bg-blue-100 text-blue-800',
+            'Zdyskwalifikowany': 'bg-red-100 text-red-800',
+        };
+
+        // --- HELPER FUNCTIONS ---
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(value || 0).replace(/\s/g, ' ');
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // --- RENDER FUNCTIONS ---
+        function createCard(deal) {
+            const colorClass = stageColors[stages.find(s => s.id === deal.stage).color];
+
+            return `
+                <div id="deal-${deal.id}" class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-4 cursor-pointer has-tooltip" draggable="true" data-deal-id="${deal.id}">
+                    <div class="relative">
+                        <div class="tooltip absolute -top-10 left-1/2 -translate-x-1/2 w-max bg-gray-800 text-white text-xs rounded py-1 px-2 z-10">
+                            Otwarty: ${deal.openDate} | Spodz. zamknięcie: ${deal.expectedClose}
+                        </div>
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-base text-gray-900 pr-2">${deal.projectName}</h3>
+                            <span class="${colorClass.bg} ${colorClass.text} text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center space-x-1.5 flex-shrink-0">
+                                <i class="fas ${techIcons[deal.roofTech]}"></i>
+                                <span>${deal.roofTech}</span>
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-600 truncate">${deal.company}</p>
+                        <p class="text-sm text-gray-500 mb-3">${deal.areaM2.toLocaleString('pl-PL')} m²</p>
+                        <div class="flex justify-between items-center mt-2">
+                            <span class="font-bold text-gray-900">${formatCurrency(deal.valueNet)}</span>
+                            <span class="text-xs text-gray-500 font-semibold">${deal.probability}%</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBoard() {
+            const kanbanBoard = document.getElementById('kanban-board');
+            kanbanBoard.innerHTML = '';
+            stages.forEach(stage => {
+                const stageDeals = deals.filter(deal => deal.stage === stage.id);
+                const dealCount = stageDeals.length;
+                const totalValue = stageDeals.reduce((sum, deal) => sum + deal.valueNet, 0);
+                const column = document.createElement('div');
+                column.className = 'kanban-column flex-shrink-0 p-3 mr-4 bg-gray-100 rounded-lg';
+                column.dataset.stageId = stage.id;
+                const colorClass = stageColors[stage.color];
+                column.innerHTML = `
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center space-x-2">
+                           <span class="${colorClass.bg} ${colorClass.text} w-6 h-6 rounded-md flex items-center justify-center font-bold text-sm">${dealCount}</span>
+                           <h2 class="font-bold text-gray-700">${stage.name}</h2>
+                        </div>
+                        <span class="text-sm font-semibold text-gray-500">${formatCurrency(totalValue)}</span>
+                    </div>
+                    <div class="deal-list min-h-[200px]" data-stage-id="${stage.id}">
+                        ${stageDeals.map(createCard).join('')}
+                    </div>
+                `;
+                kanbanBoard.appendChild(column);
+            });
+            addDragAndDropListeners(); // Re-add listeners after re-rendering
+        }
+
+        function renderContacts() {
+            const tableBody = document.getElementById('contacts-table-body');
+            tableBody.innerHTML = '';
+            contacts.forEach(contact => {
+                const row = document.createElement('tr');
+                row.className = "hover:bg-gray-50";
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">${contact.name}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${contact.company}</div>
+                        <div class="text-sm text-gray-500">${contact.address}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm text-gray-900">${contact.phone}</div>
+                        <div class="text-sm text-gray-500">${contact.email}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${contactTypeColors[contact.type]}">
+                            ${contact.type}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[contact.status]}">
+                            ${contact.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        ${contact.lastActivity}
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // --- MODAL LOGIC ---
+        function openDealModal(dealId) {
+            const deal = deals.find(d => d.id === dealId);
+            if (!deal) return;
+            
+            // Store the current deal ID on the modal element for activity saving
+            dealModal.dataset.currentDealId = deal.id;
+
+            document.getElementById('modal-projectName').textContent = deal.projectName;
+            document.getElementById('modal-company').textContent = deal.company;
+            document.getElementById('modal-roofTech').textContent = deal.roofTech;
+            document.getElementById('modal-areaM2').textContent = `${deal.areaM2.toLocaleString('pl-PL')} m²`;
+            document.getElementById('modal-openDate').textContent = deal.openDate;
+            document.getElementById('modal-expectedClose').textContent = deal.expectedClose;
+
+            const valueInput = document.getElementById('modal-value');
+            valueInput.value = deal.valueNet;
+            valueInput.onchange = () => { deal.valueNet = parseFloat(valueInput.value) || 0; renderBoard(); };
+
+            const probSelect = document.getElementById('modal-probability');
+            const currentProb = deal.probability;
+            const optionValues = new Set();
+            for (let i = 0; i <= 100; i += 5) { optionValues.add(i); }
+            optionValues.add(currentProb); // Ensure current probability is always an option
+
+            probSelect.innerHTML = [...optionValues].sort((a,b) => a-b).map(val =>
+                `<option value="${val}" ${val === currentProb ? 'selected' : ''}>${val}%</option>`
+            ).join('');
+            probSelect.onchange = () => { deal.probability = parseInt(probSelect.value); renderBoard(); };
+            
+            const stageSelect = document.getElementById('modal-stage');
+            stageSelect.innerHTML = stages.map(s => `<option value="${s.id}" ${s.id === deal.stage ? 'selected' : ''}>${s.name}</option>`).join('');
+            stageSelect.onchange = () => { 
+                const oldStage = deal.stage;
+                deal.stage = stageSelect.value; 
+                renderBoard(); 
+                showToast(`Deal "${deal.projectName}" moved to "${stages.find(s => s.id === deal.stage).name}"`);
+
+                // Add activity for stage change when changed from modal
+                if (!activities[deal.id]) {
+                    activities[deal.id] = [];
+                }
+                activities[deal.id].unshift({
+                    type: 'stage-change',
+                    user: 'Użytkownik', // Or current user if implemented
+                    text: `Etap zmieniony z "${stages.find(s => s.id === oldStage).name}" na "${stages.find(s => s.id === deal.stage).name}"`,
+                    timestamp: new Date().toLocaleString('pl-PL', { hour12: false })
+                });
+                renderActivityFeed(deal.id); // Re-render activity feed after stage change
+            };
+
+            renderActivityFeed(deal.id); // Initial render of activity feed
+
+            dealModal.classList.remove('hidden');
+            dealModal.classList.add('show');
+        }
+
+        function renderActivityFeed(dealId) {
+            const feedContainer = document.getElementById('modal-activity-feed');
+            const dealActivities = activities[dealId] || [];
+            feedContainer.innerHTML = dealActivities.map(activity => `
+                <div class="flex space-x-4">
+                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                        <i class="fas ${activityIcons[activity.type].icon} ${activityIcons[activity.type].color}"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-800">${activity.text}</p>
+                        <p class="text-xs text-gray-500 mt-1">${activity.user} • ${activity.timestamp}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function closeDealModal() {
+            dealModal.classList.remove('show');
+            setTimeout(() => dealModal.classList.add('hidden'), 300);
+            dealModal.removeAttribute('data-current-deal-id'); // Clear the stored deal ID
+        }
+
+        // --- EVENT LISTENERS & NAVIGATION ---
+        function addDragAndDropListeners() {
+            document.querySelectorAll('[draggable="true"]').forEach(card => {
+                card.addEventListener('dragstart', e => {
+                    e.dataTransfer.setData('text/plain', card.id);
+                    // Add a class to the dragged card for visual feedback
+                    setTimeout(() => card.classList.add('card-dragging'), 0);
+                });
+                card.addEventListener('dragend', () => {
+                    // Remove the visual feedback class when dragging ends
+                    card.classList.remove('card-dragging');
+                });
+            });
+
+            document.querySelectorAll('.deal-list').forEach(column => {
+                column.addEventListener('dragover', e => { 
+                    e.preventDefault(); // Allow drop
+                    column.classList.add('drag-over'); // Add visual feedback for drag over
+                });
+                column.addEventListener('dragleave', () => { 
+                    column.classList.remove('drag-over'); // Remove visual feedback
+                });
+                column.addEventListener('drop', e => {
+                    e.preventDefault();
+                    column.classList.remove('drag-over'); // Remove visual feedback
+                    const cardId = e.dataTransfer.getData('text/plain');
+                    const droppedCard = document.getElementById(cardId);
+                    const dealId = parseInt(droppedCard.dataset.dealId);
+                    const newStageId = column.dataset.stageId;
+
+                    const dealIndex = deals.findIndex(d => d.id === dealId);
+                    if (dealIndex > -1) {
+                        const oldStage = deals[dealIndex].stage;
+                        if (oldStage !== newStageId) {
+                            deals[dealIndex].stage = newStageId;
+                            renderBoard(); // Re-render the board to reflect the change
+                            showToast(`Deal "${deals[dealIndex].projectName}" moved to "${stages.find(s => s.id === newStageId).name}"`);
+
+                            // Add activity for stage change
+                            if (!activities[dealId]) {
+                                activities[dealId] = [];
+                            }
+                            activities[dealId].unshift({ // Add to the beginning of the array
+                                type: 'stage-change',
+                                user: 'System', // Could be 'Użytkownik' if a user system is implemented
+                                text: `Etap zmieniony z "${stages.find(s => s.id === oldStage).name}" na "${stages.find(s => s.id === newStageId).name}"`,
+                                timestamp: new Date().toLocaleString('pl-PL', { hour12: false })
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Add click listener for cards to open modal
+            // We need to target the actual card div, not just any element with draggable="true"
+            document.querySelectorAll('.kanban-column .bg-white').forEach(card => { 
+                card.addEventListener('click', function() {
+                    const dealId = parseInt(this.dataset.dealId);
+                    openDealModal(dealId);
+                });
+            });
+        }
+
+        // Add modal close button functionality
+        closeModalBtn.addEventListener('click', closeDealModal);
+        // Close modal when clicking on the overlay (outside the modal content)
+        dealModal.addEventListener('click', (e) => {
+            if (e.target === dealModal) {
+                closeDealModal();
+            }
+        });
+
+        // Add event listener for "Nowy deal/kontakt" button in the header
+        addNewButton.addEventListener('click', () => {
+            if (kanbanView.classList.contains('hidden')) { // If contacts view is active
+                showToast('Funkcja dodawania nowego kontaktu będzie dostępna wkrótce!');
+            } else { // If kanban view is active
+                showToast('Funkcja dodawania nowego dealu będzie dostępna wkrótce!');
+            }
+            // In a real app, this would open a form to create a new deal/contact.
+        });
+
+        // Sidebar Navigation
+        kanbanLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            kanbanView.classList.remove('hidden');
+            contactsView.classList.add('hidden');
+            kanbanLink.classList.add('active');
+            contactsLink.classList.remove('active');
+            addNewBtnText.textContent = 'Nowy deal';
+            renderBoard(); // Re-render board on view switch
+        });
+
+        contactsLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            contactsView.classList.remove('hidden');
+            kanbanView.classList.add('hidden');
+            contactsLink.classList.add('active');
+            kanbanLink.classList.remove('active');
+            addNewBtnText.textContent = 'Nowy kontakt';
+            renderContacts(); // Render contacts on view switch
+        });
+
+        // Add functionality to save new activity in the modal
+        saveActivityButton.addEventListener('click', () => {
+            const currentDealId = parseInt(dealModal.dataset.currentDealId); // Get current deal ID from modal's dataset
+            const activityText = newActivityInput.value.trim();
+
+            if (activityText && !isNaN(currentDealId)) {
+                if (!activities[currentDealId]) {
+                    activities[currentDealId] = [];
+                }
+                const newActivity = {
+                    type: 'note', // Default to 'note' for manual input
+                    user: 'Użytkownik', // This could be dynamically set from a logged-in user
+                    text: activityText,
+                    timestamp: new Date().toLocaleString('pl-PL', { hour12: false })
+                };
+                activities[currentDealId].unshift(newActivity); // Add new activity to the top
+                newActivityInput.value = ''; // Clear the input
+                renderActivityFeed(currentDealId); // Re-render activity feed in modal
+                showToast('Aktywność zapisana!');
+            } else if (!activityText) {
+                showToast('Wpisz treść aktywności, aby ją zapisać.');
+            }
+        });
+
+        // Initial render
+        renderBoard();
+        // Ensure only one view is active on load, and "Kanban" is the default.
+        kanbanLink.classList.add('active');
+        contactsLink.classList.remove('active');
+    });
+    </script>
+</body>
+</html>
