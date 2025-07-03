@@ -355,7 +355,12 @@
 
         // --- HELPER FUNCTIONS ---
         function formatCurrency(value) {
-            return new Intl.NumberFormat('pl-PL', { style: 'currency', currency: 'PLN' }).format(value || 0).replace(/\s/g, ' ');
+            return new Intl.NumberFormat('pl-PL', {
+                style: 'currency',
+                currency: 'PLN',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value || 0).replace(/\s/g, ' ');
         }
 
         function showToast(message) {
@@ -411,10 +416,12 @@
                            <span class="${colorClass.bg} ${colorClass.text} w-6 h-6 rounded-md flex items-center justify-center font-bold text-sm">${dealCount}</span>
                            <h2 class="font-bold text-gray-700">${stage.name}</h2>
                         </div>
-                        <span class="text-sm font-semibold text-gray-500">${formatCurrency(totalValue)}</span>
                     </div>
                     <div class="deal-list min-h-[200px]" data-stage-id="${stage.id}">
                         ${stageDeals.map(createCard).join('')}
+                    </div>
+                    <div class="mt-2 text-sm font-semibold text-gray-500 text-right">
+                        ${formatCurrency(totalValue)}
                     </div>
                 `;
                 kanbanBoard.appendChild(column);
