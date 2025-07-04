@@ -22,11 +22,11 @@
         background-color: #f8f9fa;
       }
       .brand-accent {
-        background-color: #e30613;
+        background-color: #ec832d;
         color: white;
       }
       .brand-accent-text {
-        color: #e30613;
+        color: #ec832d;
       }
       .kanban-container {
         display: flex;
@@ -100,8 +100,8 @@
       }
       /* Active nav link style */
       .nav-link.active {
-        background-color: #fee2e2; /* red-100 */
-        color: #e30613; /* brand-accent-text */
+        background-color: #f2ac73; /* accent-100 */
+        color: #ec832d; /* brand-accent-text */
       }
     </style>
   </head>
@@ -173,7 +173,7 @@
               <input
                 type="text"
                 placeholder="Szukaj kontaktów, projektów..."
-                class="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500"
+                class="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-lg focus:ring-[#EC832D] focus:border-[#EC832D]"
               />
             </div>
             <div class="flex items-center space-x-2">
@@ -192,7 +192,7 @@
           </div>
           <button
             id="add-new-button"
-            class="brand-accent hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center space-x-2"
+            class="brand-accent hover:bg-[#F2AC73] text-white font-bold py-2 px-4 rounded-lg flex items-center space-x-2"
           >
             <i class="fas fa-plus"></i>
             <span id="add-new-btn-text">Nowy deal</span>
@@ -306,7 +306,7 @@
               >
               <select
                 id="modal-stage"
-                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#EC832D] focus:border-[#EC832D] sm:text-sm rounded-md"
               ></select>
             </div>
             <!-- Deal Value -->
@@ -318,7 +318,7 @@
                 <input
                   type="number"
                   id="modal-value"
-                  class="focus:ring-red-500 focus:border-red-500 block w-full pr-12 sm:text-sm border-gray-300 rounded-md"
+                  class="focus:ring-[#EC832D] focus:border-[#EC832D] block w-full pr-12 sm:text-sm border-gray-300 rounded-md"
                   placeholder="0.00"
                 />
                 <div
@@ -337,7 +337,7 @@
               >
               <select
                 id="modal-probability"
-                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#EC832D] focus:border-[#EC832D] sm:text-sm rounded-md"
               ></select>
             </div>
             <!-- Key Info -->
@@ -463,13 +463,13 @@
               <textarea
                 id="new-activity-input"
                 rows="3"
-                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500"
+                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-[#EC832D] focus:border-[#EC832D]"
                 placeholder="Dodaj notatkę lub zapisz aktywność..."
               ></textarea>
               <div class="flex justify-end mt-2">
                 <button
                   id="save-activity-btn"
-                  class="brand-accent hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg flex items-center space-x-2"
+                  class="brand-accent hover:bg-[#F2AC73] text-white font-bold py-2 px-4 rounded-lg flex items-center space-x-2"
                 >
                   <i class="fas fa-paper-plane"></i>
                   <span>Zapisz</span>
