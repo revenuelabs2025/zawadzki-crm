@@ -1,98 +1,117 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Logowanie</title>
-  <style>
-    /* Reset podstawowy */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
-    body {
-      background-color: #f0f2f5;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-    
-    .login-card {
-      background-color: #ffffff;
-      padding: 40px 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      width: 320px;
-      text-align: center;
-    }
-    
-    .login-card .logo {
-      max-width: 180px;
-      margin-bottom: 24px;
-    }
-    
-    .form-group {
-      text-align: left;
-      margin-bottom: 16px;
-    }
-    
-    .form-group label {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 14px;
-      color: #333333;
-    }
-    
-    .form-group input {
-      width: 100%;
-      padding: 10px;
-      font-size: 14px;
-      border: 1px solid #d1d5db;
-      border-radius: 4px;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    
-    .form-group input:focus {
-      border-color: #2979ff;
-    }
-    
-    .login-card button {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      font-weight: 500;
-      color: #ffffff;
-      background-color: #2979ff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
-    
-    .login-card button:hover {
-      background-color: #2568e0;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logowanie do Systemu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the login screen */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Light gray background */
+        }
+        .brand-accent {
+            background-color: #ec832d; /* Orange/brown accent color */
+            color: white;
+        }
+        .brand-accent-text {
+            color: #ec832d; /* Orange/brown accent color for text */
+        }
+    </style>
 </head>
-<body>
-  <div class="login-card">
-    <img src="zis-zawadzki-logo 1.png" alt="ZIS Zawadzki logo" class="logo">
-    <form>
-      <div class="form-group">
-        <label for="login">Login</label>
-        <input type="text" id="login" name="login" placeholder="Wprowadź login">
-      </div>
-      <div class="form-group">
-        <label for="password">Hasło</label>
-        <input type="password" id="password" name="password" placeholder="Wprowadź hasło">
-      </div>
-      <button type="submit">Zaloguj się</button>
-    </form>
-  </div>
+<body class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
+        <!-- Logo Section -->
+        <div class="mb-8 flex justify-center">
+            <!-- Placeholder for PNG Logo -->
+            <img src="zis-zawadzki-logo 1.png" alt="ZIS Zawadzki" class="w-24 h-24">
+        </div>
+
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Zaloguj się</h2>
+
+        <!-- Login Form -->
+        <form id="login-form" class="space-y-6">
+            <div>
+                <label for="username" class="sr-only">Nazwa użytkownika / Email</label>
+                <input type="text" id="username" name="username" placeholder="Nazwa użytkownika / Email" required
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 text-gray-800 placeholder-gray-500">
+            </div>
+            <div>
+                <label for="password" class="sr-only">Hasło</label>
+                <input type="password" id="password" name="password" placeholder="Hasło" required
+                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-red-500 focus:border-red-500 text-gray-800 placeholder-gray-500">
+            </div>
+            <button type="submit"
+                    class="w-full brand-accent hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition duration-200 ease-in-out transform hover:scale-105">
+                Zaloguj się
+            </button>
+        </form>
+
+        <!-- Optional: Forgot password / Register links -->
+        <div class="mt-6 text-sm text-gray-600">
+            <a href="#" class="brand-accent-text hover:underline">Zapomniałeś hasła?</a>
+            <span class="mx-2">|</span>
+            <a href="#" class="brand-accent-text hover:underline">Zarejestruj się</a>
+        </div>
+
+        <!-- Toast Notification for messages -->
+        <div id="login-toast" class="toast fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-5 rounded-lg shadow-lg flex items-center space-x-3 z-50 hidden">
+            <i class="fas fa-info-circle text-blue-400"></i>
+            <span id="toast-message"></span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('login-form');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const loginToast = document.getElementById('login-toast');
+            const toastMessage = loginToast.querySelector('#toast-message');
+
+            function showToast(message, type = 'info') {
+                toastMessage.textContent = message;
+                loginToast.classList.remove('hidden');
+                loginToast.classList.add('show');
+
+                // Update icon and color based on type
+                const icon = loginToast.querySelector('i');
+                icon.className = ''; // Clear existing classes
+                if (type === 'success') {
+                    icon.classList.add('fas', 'fa-check-circle', 'text-green-400');
+                } else if (type === 'error') {
+                    icon.classList.add('fas', 'fa-times-circle', 'text-red-400');
+                } else { // info
+                    icon.classList.add('fas', 'fa-info-circle', 'text-blue-400');
+                }
+
+                setTimeout(() => {
+                    loginToast.classList.remove('show');
+                    loginToast.classList.add('hidden');
+                }, 3000);
+            }
+
+            loginForm.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                const username = usernameInput.value;
+                const password = passwordInput.value;
+
+                // Simple validation (replace with actual authentication logic)
+                if (username === 'user@example.com' && password === 'password123') {
+                    showToast('Logowanie pomyślne!', 'success');
+                    // In a real application, redirect to the main dashboard
+                    // window.location.href = '/dashboard';
+                } else {
+                    showToast('Nieprawidłowa nazwa użytkownika lub hasło.', 'error');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
+
