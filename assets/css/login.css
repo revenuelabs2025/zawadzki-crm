@@ -1,0 +1,12 @@
+        /* Custom styles for the login screen */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa; /* Light gray background */
+        }
+        .brand-accent {
+            background-color: #ec832d; /* Orange/brown accent color */
+            color: white;
+        }
+        .brand-accent-text {
+            color: #ec832d; /* Orange/brown accent color for text */
+        }
