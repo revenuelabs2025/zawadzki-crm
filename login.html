@@ -8,27 +8,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Custom styles for the login screen */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8f9fa; /* Light gray background */
-        }
-        .brand-accent {
-            background-color: #ec832d; /* Orange/brown accent color */
-            color: white;
-        }
-        .brand-accent-text {
-            color: #ec832d; /* Orange/brown accent color for text */
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/login.css">
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100 p-4">
     <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md text-center">
         <!-- Logo Section -->
         <div class="mb-8 flex justify-center">
             <!-- Placeholder for PNG Logo -->
-            <img src="zis-zawadzki-logo.png" alt="ZIS Zawadzki">
+            <img src="assets/img/zis-zawadzki-logo.png" alt="ZIS Zawadzki">
         </div>
 
         <h2 class="text-3xl font-bold text-gray-800 mb-6">Zaloguj się</h2>
@@ -63,53 +50,7 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loginForm = document.getElementById('login-form');
-            const usernameInput = document.getElementById('username');
-            const passwordInput = document.getElementById('password');
-            const loginToast = document.getElementById('login-toast');
-            const toastMessage = loginToast.querySelector('#toast-message');
-
-            function showToast(message, type = 'info') {
-                toastMessage.textContent = message;
-                loginToast.classList.remove('hidden');
-                loginToast.classList.add('show');
-
-                // Update icon and color based on type
-                const icon = loginToast.querySelector('i');
-                icon.className = ''; // Clear existing classes
-                if (type === 'success') {
-                    icon.classList.add('fas', 'fa-check-circle', 'text-green-400');
-                } else if (type === 'error') {
-                    icon.classList.add('fas', 'fa-times-circle', 'text-red-400');
-                } else { // info
-                    icon.classList.add('fas', 'fa-info-circle', 'text-blue-400');
-                }
-
-                setTimeout(() => {
-                    loginToast.classList.remove('show');
-                    loginToast.classList.add('hidden');
-                }, 3000);
-            }
-
-            loginForm.addEventListener('submit', function(event) {
-                event.preventDefault(); // Prevent default form submission
-
-                const username = usernameInput.value;
-                const password = passwordInput.value;
-
-                // Simple validation (replace with actual authentication logic)
-                if (username === 'user@example.com' && password === 'password123') {
-                    showToast('Logowanie pomyślne!', 'success');
-                    // In a real application, redirect to the main dashboard
-                    // window.location.href = '/dashboard';
-                } else {
-                    showToast('Nieprawidłowa nazwa użytkownika lub hasło.', 'error');
-                }
-            });
-        });
-    </script>
+    <script src="assets/js/login.js"></script>
 </body>
 </html>
 
