@@ -82,6 +82,8 @@
       }
       /* Active nav link style */
       .nav-link.active {
-        background-color: #f2ac73; /* accent-100 */
+        background-color: transparent; /* no background highlight */
+      }
+      .nav-link.active i {
         color: #ec832d; /* brand-accent-text */
       }
