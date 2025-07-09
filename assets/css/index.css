@@ -63,23 +63,6 @@
         opacity: 1;
         transform: translateY(0);
       }
-      /* Modal styles */
-      #deal-modal {
-        opacity: 0;
-        transition: opacity 0.3s ease-in-out;
-      }
-      #deal-modal.show {
-        opacity: 1;
-      }
-      #deal-modal #modal-content {
-        opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.3s ease-in-out;
-      }
-      #deal-modal.show #modal-content {
-        opacity: 1;
-        transform: translateY(0);
-      }
       /* Sidebar navigation */
       .nav-link {
         display: flex;
