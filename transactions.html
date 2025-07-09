@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRM - ZIS Zawadzki</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/index.css" />
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <div class="flex h-screen">
+      <!-- Collapsed Sidebar -->
+      <aside
+        class="bg-white w-48 flex flex-col items-start py-4 shadow-md z-20"
+      >
+        <div
+          class="w-12 h-12 mb-8 flex items-center justify-center rounded-lg bg-gray-100"
+        >
+          <svg
+            class="w-8 h-8 brand-accent-text"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+            ></path>
+          </svg>
+        </div>
+        <nav class="flex flex-col space-y-4">
+          <a href="contacts.html" id="contacts-link" class="nav-link flex items-center space-x-2 p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Kontakty"><i class="fas fa-address-book fa-lg"></i><span>Kontakty</span></a>
+          <a href="transactions.html" id="kanban-link" class="nav-link flex items-center space-x-2 p-3 rounded-lg text-gray-600 hover:bg-gray-200 active" title="Transakcje"><i class="fas fa-project-diagram fa-lg"></i><span>Transakcje</span></a>
+          <a href="#" class="nav-link flex items-center space-x-2 p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Projekty"><i class="fas fa-folder-open fa-lg"></i><span>Projekty</span></a>
+          <a href="#" class="nav-link flex items-center space-x-2 p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Zasoby"><i class="fas fa-box-open fa-lg"></i><span>Zasoby</span></a>
+          <a href="#" class="nav-link flex items-center space-x-2 p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Raporty"><i class="fas fa-tachometer-alt fa-lg"></i><span>Raporty</span></a>
+          <a href="#" class="nav-link flex items-center space-x-2 p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Baza wiedzy"><i class="fas fa-book fa-lg"></i><span>Baza wiedzy</span></a>
+          <a href="#" class="nav-link flex items-center space-x-2 p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Ustawienia"><i class="fas fa-cog fa-lg"></i><span>Ustawienia</span></a>
+        </nav>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col overflow-y-hidden">
+        <!-- Top Toolbar -->
+        <header
+          class="bg-white p-4 border-b border-gray-200 flex items-center justify-between flex-wrap z-10"
+        >
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+              <i
+                class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              ></i>
+              <input
+                type="text"
+                placeholder="Szukaj kontaktów, projektów..."
+                class="pl-10 pr-4 py-2 w-64 border border-gray-300 rounded-lg focus:ring-[#EC832D] focus:border-[#EC832D]"
+              />
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="text-sm font-medium text-gray-600">Filtry:</span>
+              <button
+                class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300"
+              >
+                Typ <i class="fas fa-chevron-down ml-1 text-xs"></i>
+              </button>
+              <button
+                class="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded-full hover:bg-gray-300"
+              >
+                Status <i class="fas fa-chevron-down ml-1 text-xs"></i>
+              </button>
+            </div>
+          </div>
+          <button
+            id="add-new-button"
+            class="brand-accent hover:bg-[#F2AC73] text-white font-bold py-2 px-4 rounded-lg flex items-center space-x-2"
+          >
+            <i class="fas fa-plus"></i>
+            <span id="add-new-btn-text">Nowy deal</span>
+          </button>
+        </header>
+
+        <!-- Views Container -->
+        <div class="flex-1 overflow-y-auto">
+          <!-- Kanban Board View -->
+          <div id="kanban-view" class="p-4 lg:p-6">
+            <div id="kanban-board" class="kanban-container">
+              <!-- Columns will be dynamically generated here -->
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+
+    <!-- Single Deal Modal -->
+    <div
+      id="deal-modal"
+      class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 z-40 flex items-center justify-center p-4 transition-opacity duration-300"
+    >
+      <div
+        id="modal-content"
+        class="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-full max-h-[90vh] flex flex-col transform transition-all opacity-0 -translate-y-10 duration-300"
+      >
+        <!-- Modal Header -->
+        <div
+          class="p-5 border-b border-gray-200 flex justify-between items-center flex-shrink-0"
+        >
+          <h2
+            id="modal-projectName"
+            class="text-2xl font-bold text-gray-800"
+          ></h2>
+          <button
+            id="modal-close-btn"
+            class="text-gray-400 hover:text-gray-600"
+          >
+            <i class="fas fa-times fa-2x"></i>
+          </button>
+        </div>
+
+        <!-- Modal Body -->
+        <div
+          class="flex-1 p-6 overflow-y-auto grid grid-cols-1 md:grid-cols-3 gap-6"
+        >
+          <!-- Left Column: Details -->
+          <div class="md:col-span-1 flex flex-col space-y-6">
+            <!-- Deal Stage -->
+            <div>
+              <label for="modal-stage" class="text-sm font-medium text-gray-500"
+                >Etap</label
+              >
+              <select
+                id="modal-stage"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#EC832D] focus:border-[#EC832D] sm:text-sm rounded-md"
+              ></select>
+            </div>
+            <!-- Deal Value -->
+            <div>
+              <label for="modal-value" class="text-sm font-medium text-gray-500"
+                >Wartość netto</label
+              >
+              <div class="mt-1 relative rounded-md shadow-sm">
+                <input
+                  type="number"
+                  id="modal-value"
+                  class="focus:ring-[#EC832D] focus:border-[#EC832D] block w-full pr-12 sm:text-sm border-gray-300 rounded-md"
+                  placeholder="0.00"
+                />
+                <div
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none"
+                >
+                  <span class="text-gray-500 sm:text-sm">PLN</span>
+                </div>
+              </div>
+            </div>
+            <!-- Probability -->
+            <div>
+              <label
+                for="modal-probability"
+                class="text-sm font-medium text-gray-500"
+                >Prawdopodobieństwo</label
+              >
+              <select
+                id="modal-probability"
+                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-[#EC832D] focus:border-[#EC832D] sm:text-sm rounded-md"
+              ></select>
+            </div>
+            <!-- Key Info -->
+            <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <h4 class="font-semibold text-gray-800 mb-3">
+                Kluczowe informacje
+              </h4>
+              <dl class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Klient</dt>
+                  <dd
+                    id="modal-company"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Technologia</dt>
+                  <dd
+                    id="modal-roofTech"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Powierzchnia</dt>
+                  <dd
+                    id="modal-areaM2"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Data otwarcia</dt>
+                  <dd
+                    id="modal-openDate"
+                    class="text-sm font-medium text-gray-900"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Spodz. zamknięcie</dt>
+                  <dd
+                    id="modal-expectedClose"
+                    class="text-sm font-medium text-gray-900"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Marża</dt>
+                  <dd
+                    id="modal-margin"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Data rozpoczęcia</dt>
+                  <dd
+                    id="modal-startDate"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Lokalizacja</dt>
+                  <dd
+                    id="modal-location"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Typ inwestora</dt>
+                  <dd
+                    id="modal-investorType"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Typ obiektu</dt>
+                  <dd
+                    id="modal-objectType"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Rodzaj konstrukcji</dt>
+                  <dd
+                    id="modal-structureType"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Rodzaj termoizolacji</dt>
+                  <dd
+                    id="modal-insulationType"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Źródło pozyskania</dt>
+                  <dd
+                    id="modal-acquisitionSource"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Powód wstrzymania</dt>
+                  <dd
+                    id="modal-holdReason"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+                <div class="flex justify-between items-center">
+                  <dt class="text-sm text-gray-500">Powód przegrania</dt>
+                  <dd
+                    id="modal-lostReason"
+                    class="text-sm font-medium text-gray-900 text-right"
+                  ></dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+
+          <!-- Right Column: Activity -->
+          <div class="md:col-span-2">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Aktywności</h3>
+            <!-- Add new activity -->
+            <div class="mb-6">
+              <textarea
+                id="new-activity-input"
+                rows="3"
+                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-[#EC832D] focus:border-[#EC832D]"
+                placeholder="Dodaj notatkę lub zapisz aktywność..."
+              ></textarea>
+              <div class="flex justify-end mt-2">
+                <button
+                  id="save-activity-btn"
+                  class="brand-accent hover:bg-[#F2AC73] text-white font-bold py-2 px-4 rounded-lg flex items-center space-x-2"
+                >
+                  <i class="fas fa-paper-plane"></i>
+                  <span>Zapisz</span>
+                </button>
+              </div>
+            </div>
+            <!-- Activity Feed -->
+            <div id="modal-activity-feed" class="space-y-6">
+              <!-- Activity items will be injected here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div
+      id="toast"
+      class="toast fixed bottom-5 right-5 bg-gray-800 text-white py-3 px-5 rounded-lg shadow-lg flex items-center space-x-3 z-50"
+    >
+      <i class="fas fa-check-circle text-green-400"></i>
+      <span id="toast-message"></span>
+    </div>
+
+    <script src="assets/js/index.js"></script>
+  </body>
+</html>

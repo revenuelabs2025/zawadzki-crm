@@ -496,6 +496,7 @@
 
         function renderBoard() {
           const kanbanBoard = document.getElementById("kanban-board");
+  if (!kanbanBoard) return;
           kanbanBoard.innerHTML = "";
           const fragment = document.createDocumentFragment();
           const dealsByStage = deals.reduce((acc, deal) => {
@@ -536,6 +537,7 @@
 
         function renderContacts() {
           const tableBody = document.getElementById("contacts-table-body");
+  if (!tableBody) return;
           tableBody.innerHTML = "";
           const fragment = document.createDocumentFragment();
           contacts.forEach((contact) => {
@@ -762,17 +764,18 @@
             });
         }
 
-        // Add modal close button functionality
-        closeModalBtn.addEventListener("click", closeDealModal);
+        if (closeModalBtn) closeModalBtn.addEventListener("click", closeDealModal);
         // Close modal when clicking on the overlay (outside the modal content)
-        dealModal.addEventListener("click", (e) => {
-          if (e.target === dealModal) {
-            closeDealModal();
-          }
-        });
+        if (dealModal) {
+          dealModal.addEventListener("click", (e) => {
+            if (e.target === dealModal) {
+              closeDealModal();
+            }
+          });
+        }
 
         // Add event listener for "Nowy deal/kontakt" button in the header
-        addNewButton.addEventListener("click", () => {
+        if (addNewButton) addNewButton.addEventListener("click", () => {
           if (kanbanView.classList.contains("hidden")) {
             // If contacts view is active
             showToast(
@@ -788,28 +791,29 @@
         });
 
         // Sidebar Navigation
-        kanbanLink.addEventListener("click", (e) => {
-          e.preventDefault();
-          kanbanView.classList.remove("hidden");
-          contactsView.classList.add("hidden");
-          kanbanLink.classList.add("active");
-          contactsLink.classList.remove("active");
-          addNewBtnText.textContent = "Nowy deal";
-          renderBoard(); // Re-render board on view switch
-        });
+        if (kanbanLink && contactsLink && kanbanView && contactsView) {
+          kanbanLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            kanbanView.classList.remove("hidden");
+            contactsView.classList.add("hidden");
+            kanbanLink.classList.add("active");
+            contactsLink.classList.remove("active");
+            addNewBtnText.textContent = "Nowy deal";
+            renderBoard(); // Re-render board on view switch
+          });
 
-        contactsLink.addEventListener("click", (e) => {
-          e.preventDefault();
-          contactsView.classList.remove("hidden");
-          kanbanView.classList.add("hidden");
-          contactsLink.classList.add("active");
-          kanbanLink.classList.remove("active");
-          addNewBtnText.textContent = "Nowy kontakt";
-          renderContacts(); // Render contacts on view switch
-        });
-
+          contactsLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            contactsView.classList.remove("hidden");
+            kanbanView.classList.add("hidden");
+            contactsLink.classList.add("active");
+            kanbanLink.classList.remove("active");
+            addNewBtnText.textContent = "Nowy kontakt";
+            renderContacts(); // Render contacts on view switch
+          });
+        }
         // Add functionality to save new activity in the modal
-        saveActivityButton.addEventListener("click", () => {
+        if (saveActivityButton) saveActivityButton.addEventListener("click", () => {
           const currentDealId = parseInt(dealModal.dataset.currentDealId); // Get current deal ID from modal's dataset
           const activityText = newActivityInput.value.trim();
 
@@ -831,10 +835,13 @@
             showToast("Wpisz treść aktywności, aby ją zapisać.");
           }
         });
-
-        // Initial render
-        renderBoard();
-        // Ensure only one view is active on load, and "Kanban" is the default.
-        kanbanLink.classList.add("active");
-        contactsLink.classList.remove("active");
-      });
+  if (board) {
+    renderBoard();
+    if (kanbanLink) kanbanLink.classList.add("active");
+    if (contactsLink) contactsLink.classList.remove("active");
+  } else {
+    renderContacts();
+    if (contactsLink) contactsLink.classList.add("active");
+    if (kanbanLink) kanbanLink.classList.remove("active");
+  }
+});
