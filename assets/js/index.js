@@ -576,129 +576,7 @@
         }
 
         // --- MODAL LOGIC ---
-        function openDealModal(dealId) {
-          const deal = deals.find((d) => d.id === dealId);
-          if (!deal) return;
-
-          // Store the current deal ID on the modal element for activity saving
-          dealModal.dataset.currentDealId = deal.id;
-
-          document.getElementById("modal-projectName").textContent =
-            deal.projectName;
-          document.getElementById("modal-company").textContent = deal.company;
-          document.getElementById("modal-roofTech").textContent = deal.roofTech;
-          document.getElementById("modal-areaM2").textContent =
-            `${deal.areaM2.toLocaleString("pl-PL")} m²`;
-          document.getElementById("modal-openDate").textContent = deal.openDate;
-          document.getElementById("modal-expectedClose").textContent =
-            deal.expectedClose;
-          document.getElementById("modal-margin").textContent = deal.margin
-            ? `${deal.margin}%`
-            : "";
-          document.getElementById("modal-startDate").textContent =
-            deal.startDate;
-          document.getElementById("modal-location").textContent = deal.location;
-          document.getElementById("modal-investorType").textContent =
-            deal.investorType;
-          document.getElementById("modal-objectType").textContent =
-            deal.objectType;
-          document.getElementById("modal-structureType").textContent =
-            deal.structureType;
-          document.getElementById("modal-insulationType").textContent =
-            deal.insulationType;
-          document.getElementById("modal-acquisitionSource").textContent =
-            deal.acquisitionSource;
-          document.getElementById("modal-holdReason").textContent =
-            deal.holdReason;
-          document.getElementById("modal-lostReason").textContent =
-            deal.lostReason;
-
-          const valueInput = document.getElementById("modal-value");
-          valueInput.value = deal.valueNet;
-          valueInput.onchange = () => {
-            deal.valueNet = parseFloat(valueInput.value) || 0;
-            renderBoard();
-          };
-
-          const probSelect = document.getElementById("modal-probability");
-          const currentProb = deal.probability;
-          const optionValues = new Set();
-          for (let i = 0; i <= 100; i += 5) {
-            optionValues.add(i);
-          }
-          optionValues.add(currentProb); // Ensure current probability is always an option
-
-          probSelect.innerHTML = [...optionValues]
-            .sort((a, b) => a - b)
-            .map(
-              (val) =>
-                `<option value="${val}" ${val === currentProb ? "selected" : ""}>${val}%</option>`,
-            )
-            .join("");
-          probSelect.onchange = () => {
-            deal.probability = parseInt(probSelect.value);
-            renderBoard();
-          };
-
-          const stageSelect = document.getElementById("modal-stage");
-          stageSelect.innerHTML = stages
-            .map(
-              (s) =>
-                `<option value="${s.id}" ${s.id === deal.stage ? "selected" : ""}>${s.name}</option>`,
-            )
-            .join("");
-          stageSelect.onchange = () => {
-            const oldStage = deal.stage;
-            deal.stage = stageSelect.value;
-            renderBoard();
-            showToast(
-              `Deal "${deal.projectName}" moved to "${stages.find((s) => s.id === deal.stage).name}"`,
-            );
-
-            // Add activity for stage change when changed from modal
-            if (!activities[deal.id]) {
-              activities[deal.id] = [];
-            }
-            activities[deal.id].unshift({
-              type: "stage-change",
-              user: "Użytkownik", // Or current user if implemented
-              text: `Etap zmieniony z "${stages.find((s) => s.id === oldStage).name}" na "${stages.find((s) => s.id === deal.stage).name}"`,
-              timestamp: new Date().toLocaleString("pl-PL", { hour12: false }),
-            });
-            renderActivityFeed(deal.id); // Re-render activity feed after stage change
-          };
-
-          renderActivityFeed(deal.id); // Initial render of activity feed
-
-          dealModal.classList.remove("hidden");
-          dealModal.classList.add("show");
-        }
-
-        function renderActivityFeed(dealId) {
-          const feedContainer = document.getElementById("modal-activity-feed");
-          const dealActivities = activities[dealId] || [];
-          feedContainer.innerHTML = dealActivities
-            .map(
-              (activity) => `
-                <div class="flex space-x-4">
-                    <div class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
-                        <i class="fas ${activityIcons[activity.type].icon} ${activityIcons[activity.type].color}"></i>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-800">${activity.text}</p>
-                        <p class="text-xs text-gray-500 mt-1">${activity.user} • ${activity.timestamp}</p>
-                    </div>
-                </div>
-            `,
-            )
-            .join("");
-        }
-
-        function closeDealModal() {
-          dealModal.classList.remove("show");
-          setTimeout(() => dealModal.classList.add("hidden"), 300);
-          dealModal.removeAttribute("data-current-deal-id"); // Clear the stored deal ID
-        }
+        // The modal view has been removed, so related functions are no longer needed.
 
         // --- EVENT LISTENERS & NAVIGATION ---
         function addDragAndDropListeners() {
@@ -758,26 +636,6 @@
             });
           });
 
-          // Add click listener for cards to open modal
-          // We need to target the actual card div, not just any element with draggable="true"
-          document
-            .querySelectorAll(".kanban-column .bg-white")
-            .forEach((card) => {
-              card.addEventListener("click", function () {
-                const dealId = parseInt(this.dataset.dealId);
-                openDealModal(dealId);
-              });
-            });
-        }
-
-        if (closeModalBtn) closeModalBtn.addEventListener("click", closeDealModal);
-        // Close modal when clicking on the overlay (outside the modal content)
-        if (dealModal) {
-          dealModal.addEventListener("click", (e) => {
-            if (e.target === dealModal) {
-              closeDealModal();
-            }
-          });
         }
 
         // Add event listener for "Nowy deal/kontakt" button in the header
@@ -818,29 +676,7 @@
             renderContacts(); // Render contacts on view switch
           });
         }
-        // Add functionality to save new activity in the modal
-        if (saveActivityButton) saveActivityButton.addEventListener("click", () => {
-          const currentDealId = parseInt(dealModal.dataset.currentDealId); // Get current deal ID from modal's dataset
-          const activityText = newActivityInput.value.trim();
-
-          if (activityText && !isNaN(currentDealId)) {
-            if (!activities[currentDealId]) {
-              activities[currentDealId] = [];
-            }
-            const newActivity = {
-              type: "note", // Default to 'note' for manual input
-              user: "Użytkownik", // This could be dynamically set from a logged-in user
-              text: activityText,
-              timestamp: new Date().toLocaleString("pl-PL", { hour12: false }),
-            };
-            activities[currentDealId].unshift(newActivity); // Add new activity to the top
-            newActivityInput.value = ""; // Clear the input
-            renderActivityFeed(currentDealId); // Re-render activity feed in modal
-            showToast("Aktywność zapisana!");
-          } else if (!activityText) {
-            showToast("Wpisz treść aktywności, aby ją zapisać.");
-          }
-        });
+        // Modal has been removed, so activity saving is disabled.
   if (board) {
     renderBoard();
     if (kanbanLink) kanbanLink.classList.add("active");
