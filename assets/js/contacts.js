@@ -28,18 +28,17 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!tableBody) return;
     tableBody.innerHTML = "";
     const fragment = document.createDocumentFragment();
-    contacts.forEach((contact, index) => {
+    contacts.forEach((contact) => {
       const row = document.createElement("tr");
       row.className = "hover:bg-gray-50";
-      if (index === 0) {
-        row.classList.add("cursor-pointer");
-        row.addEventListener("click", () => {
-          window.location.href = "contact_details.html";
-        });
-      }
+      const detailsLink =
+        contact.id === 1
+          ? `<div class="text-xs"><a href="contact_details.html" class="text-blue-600 hover:underline">Szczeg\u00f3\u0142y</a></div>`
+          : "";
       row.innerHTML = `
         <td class="px-6 py-4 whitespace-nowrap">
           <div class="text-sm font-medium text-gray-900">${contact.name}</div>
+          ${detailsLink}
         </td>
         <td class="px-6 py-4 whitespace-nowrap">
           <div class="text-sm text-gray-900">${contact.company}</div>
