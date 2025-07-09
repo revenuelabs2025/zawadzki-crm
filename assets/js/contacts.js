@@ -28,9 +28,15 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!tableBody) return;
     tableBody.innerHTML = "";
     const fragment = document.createDocumentFragment();
-    contacts.forEach((contact) => {
+    contacts.forEach((contact, index) => {
       const row = document.createElement("tr");
       row.className = "hover:bg-gray-50";
+      if (index === 0) {
+        row.classList.add("cursor-pointer");
+        row.addEventListener("click", () => {
+          window.location.href = "contact_details.html";
+        });
+      }
       row.innerHTML = `
         <td class="px-6 py-4 whitespace-nowrap">
           <div class="text-sm font-medium text-gray-900">${contact.name}</div>
