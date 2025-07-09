@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM – Szczegóły kontaktu</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .brand-accent { background-color: #ec832d; color: white; }
+        .brand-accent-text { color: #ec832d; }
+
+        /* Three-column layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 250px auto 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid #e5e7eb; }
+        .logo { font-size: 24px; font-weight: 700; color: #1f2937; }
+        .nav-menu { padding: 20px 0; }
+        .nav-link { display: flex; align-items: center; padding: 12px 20px; color: #6b7280; text-decoration: none; transition: all 0.2s; }
+        .nav-link:hover { background-color: #f3f4f6; color: #1f2937; }
+        .nav-link.active { background-color: transparent; }
+        .nav-link.active i, .nav-link.active span { color: #ec832d; }
+        .nav-link i { width: 20px; margin-right: 12px; }
+
+        /* Contact card (middle column) */
+        .contact-info-card {
+            background: white;
+            border-radius: 0;
+            border: 1px solid #e5e7eb;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+        .contact-info-header {
+            display: flex;
+            align-items: center;
+            margin: 20px;
+        }
+        .contact-avatar { width: 48px; height: 48px; border-radius: 50%; background: #ec832d; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; margin-right: 15px; }
+        .contact-info-header h3 { margin: 0; font-size: 20px; color: #1f2937; }
+        .info-group { margin: 0 20px 24px; }
+        .info-group-title { font-size: 14px; font-weight: 600; color: #6b7280; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-item { display: flex; align-items: center; margin-bottom: 8px; }
+        .info-label { font-size: 14px; color: #6b7280; min-width: 80px; }
+        .info-value { font-size: 14px; color: #1f2937; font-weight: 500; }
+        .contact-type-badge { background: #f0f9ff; color: #0369a1; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .contact-type-badge.potential { background: #fef3c7; color: #d97706; }
+        .contact-type-badge.client { background: #dcfce7; color: #16a34a; }
+        .contact-info-footer { margin: 0 20px 20px; }
+        .edit-contact-btn {
+            background: #ec832d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .edit-contact-btn:hover {
+            background: #d97526;
+        }
+
+        /* Tabs area (right column) */
+        .tabs-container {
+            background: white;
+            border-radius: 0;
+            border: 1px solid #e5e7eb;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .tabs-header { display: flex; border-bottom: 1px solid #e5e7eb; background: #f9fafb; }
+        .tab-button { background: none; border: none; padding: 16px 24px; cursor: pointer; font-weight: 500; color: #6b7280; transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .tab-button.active { color: #ec832d; border-bottom-color: #ec832d; background: white; }
+        .tab-button:hover:not(.active) { color: #374151; background: #f3f4f6; }
+        .tab-content { padding: 0; overflow-y: auto; flex: 1; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">CRM System</div>
+            </div>
+            <nav class="nav-menu">
+                <a href="#" class="nav-link"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+                <a href="#" class="nav-link active"><i class="fas fa-users"></i><span>Kontakty</span></a>
+                <a href="#" class="nav-link"><i class="fas fa-building"></i><span>Firmy</span></a>
+                <a href="#" class="nav-link"><i class="fas fa-handshake"></i><span>Okazje</span></a>
+                <a href="#" class="nav-link"><i class="fas fa-tasks"></i><span>Zadania</span></a>
+                <a href="#" class="nav-link"><i class="fas fa-envelope"></i><span>Wiadomości</span></a>
+            </nav>
+        </div>
+
+        <!-- Contact Info Card (middle) -->
+        <div class="contact-info-card">
+            <div class="contact-info-header">
+                <div class="contact-avatar">JK</div>
+                <h3>Jan Kowalski</h3>
+            </div>
+            <div class="info-group">
+                <div class="info-group-title">Informacje podstawowe</div>
+                <div class="info-item"><span class="info-label">Właściciel:</span><span class="info-value">Anna Nowak</span></div>
+                <div class="info-item"><span class="info-label">Typ:</span><span class="contact-type-badge potential">Potencjalny klient</span></div>
+                <div class="info-item"><span class="info-label">Dodano:</span><span class="info-value">15.03.2024</span></div>
+            </div>
+            <div class="info-group">
+                <div class="info-group-title">Kontakt</div>
+                <div class="info-item"><span class="info-label">Email:</span><span class="info-value">jan.kowalski@techcorp.pl</span></div>
+                <div class="info-item"><span class="info-label">Telefon:</span><span class="info-value">+48 123 456 789</span></div>
+            </div>
+            <div class="info-group">
+                <div class="info-group-title">Firma</div>
+                <div class="info-item"><span class="info-label">Nazwa:</span><span class="info-value">TechCorp Sp. z o.o.</span></div>
+                <div class="info-item"><span class="info-label">Adres:</span><span class="info-value">ul. Technologiczna 15</span></div>
+                <div class="info-item"><span class="info-label">Miasto:</span><span class="info-value">Warszawa</span></div>
+                <div class="info-item"><span class="info-label">Woj.:</span><span class="info-value">Mazowieckie</span></div>
+            </div>
+            <div class="contact-info-footer">
+                <button class="edit-contact-btn"><i class="fas fa-edit"></i> Edytuj kontakt</button>
+            </div>
+        </div>
+
+        <!-- Tabs Area (right) -->
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-button active" data-tab="activity"><i class="fas fa-chart-line"></i> Podsumowanie aktywności</button>
+                <button class="tab-button" data-tab="notes"><i class="fas fa-sticky-note"></i> Notatki</button>
+                <button class="tab-button" data-tab="messages"><i class="fas fa-envelope"></i> Wiadomości</button>
+                <button class="tab-button" data-tab="tasks"><i class="fas fa-tasks"></i> Zadania</button>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane active" id="activity">
+                    <!-- Activity summary and items as before -->
+                </div>
+                <div class="tab-pane" id="notes">
+                    <!-- Notes content -->
+                </div>
+                <div class="tab-pane" id="messages">
+                    <!-- Messages content -->
+                </div>
+                <div class="tab-pane" id="tasks">
+                    <!-- Tasks content -->
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
