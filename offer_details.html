@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM – Szczegóły oferty</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/index.css" />
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .brand-accent { background-color: #ec832d; color: white; }
+        .brand-accent-text { color: #ec832d; }
+
+        /* Three-column layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 192px 25% 1fr;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: white;
+            border-right: 1px solid #e5e7eb;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+        .sidebar-header { padding: 0 20px 20px; border-bottom: 1px solid #e5e7eb; }
+        .logo { font-size: 24px; font-weight: 700; color: #1f2937; }
+        .nav-menu { padding: 20px 0; }
+        .nav-link { display: flex; align-items: center; padding: 12px 20px; color: #6b7280; text-decoration: none; transition: all 0.2s; }
+        .nav-link:hover { background-color: #f3f4f6; color: #1f2937; }
+        .nav-link.active { background-color: transparent; }
+        .nav-link.active i, .nav-link.active span { color: #ec832d; }
+        .nav-link i { width: 20px; margin-right: 12px; }
+
+        /* Offer card (middle column) */
+        .offer-info-card {
+            background: white;
+            border-radius: 0;
+            border: 1px solid #e5e7eb;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+        }
+        .offer-info-header {
+            display: flex;
+            align-items: center;
+            margin: 20px;
+        }
+        .offer-avatar { width: 48px; height: 48px; border-radius: 50%; background: #ec832d; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 18px; margin-right: 15px; }
+        .offer-info-header h3 { margin: 0; font-size: 20px; color: #1f2937; }
+        .info-group { margin: 0 20px 24px; }
+        .info-group-title { font-size: 14px; font-weight: 600; color: #6b7280; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .info-item { display: flex; align-items: center; margin-bottom: 8px; }
+        .info-label { font-size: 14px; color: #6b7280; min-width: 100px; }
+        .info-value { font-size: 14px; color: #1f2937; font-weight: 500; }
+        .offer-status-badge { background: #f0f9ff; color: #0369a1; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .offer-info-footer { margin: 0 20px 20px; }
+        .edit-offer-btn {
+            background: #ec832d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        .edit-offer-btn:hover {
+            background: #d97526;
+        }
+
+        /* Tabs area (right column) */
+        .tabs-container {
+            background: white;
+            border-radius: 0;
+            border: 1px solid #e5e7eb;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .tabs-header { display: flex; border-bottom: 1px solid #e5e7eb; background: #f9fafb; }
+        .tab-button { background: none; border: none; padding: 16px 24px; cursor: pointer; font-weight: 500; color: #6b7280; transition: all 0.2s; border-bottom: 2px solid transparent; }
+        .tab-button.active { color: #ec832d; border-bottom-color: #ec832d; background: white; }
+        .tab-button:hover:not(.active) { color: #374151; background: #f3f4f6; }
+        .tab-content { padding: 0; overflow-y: auto; flex: 1; }
+        .tab-pane { display: none; }
+        .tab-pane.active { display: block; padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="bg-white w-48 h-screen flex flex-col items-start py-4 shadow-md z-20">
+            <div class="w-full mb-8 px-2">
+                <img src="assets/img/zis-zawadzki-logo.png" alt="ZIS Zawadzki" class="w-full h-auto">
+            </div>
+            <nav class="flex flex-col space-y-4 h-full relative">
+                <a href="contacts.html" id="contacts-link" class="nav-link flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Kontakty"><i class="fas fa-address-book fa-lg"></i><span>Kontakty</span></a>
+                <a href="transactions.html" id="kanban-link" class="nav-link active flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Oferty"><i class="fas fa-project-diagram fa-lg"></i><span>Oferty</span></a>
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Realizacje"><i class="fas fa-folder-open fa-lg"></i><span>Realizacje</span></a>
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Zasoby"><i class="fas fa-box-open fa-lg"></i><span>Zasoby</span></a>
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Raporty"><i class="fas fa-tachometer-alt fa-lg"></i><span>Raporty</span></a>
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Baza wiedzy"><i class="fas fa-book fa-lg"></i><span>Baza wiedzy</span></a>
+                <a href="#" class="nav-link flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200" title="Ustawienia"><i class="fas fa-cog fa-lg"></i><span>Ustawienia</span></a>
+                <a href="login.html" class="nav-link flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200 absolute bottom-4 w-full" title="Wyloguj"><i class="fas fa-sign-out-alt fa-lg"></i><span>Wyloguj</span></a>
+            </nav>
+        </aside>
+
+        <!-- Offer Info Card (middle) -->
+        <div class="offer-info-card">
+            <div class="p-4">
+                <a href="transactions.html" class="text-gray-600 hover:text-gray-800 flex items-center">
+                    <i class="fas fa-arrow-left mr-2"></i> Powrót
+                </a>
+            </div>
+            <div class="offer-info-header">
+                <div class="offer-avatar">O1</div>
+                <h3>Nowy dach dla Biedronki</h3>
+            </div>
+            <div class="info-group">
+                <div class="info-group-title">Informacje podstawowe</div>
+                <div class="info-item"><span class="info-label">Status:</span><span class="offer-status-badge">Analiza techniczna</span></div>
+                <div class="info-item"><span class="info-label">Właściciel:</span><span class="info-value">Jan Nowak</span></div>
+                <div class="info-item"><span class="info-label">Dodano:</span><span class="info-value">15.03.2024</span></div>
+            </div>
+            <div class="info-group">
+                <div class="info-group-title">Szczegóły oferty</div>
+                <div class="info-item"><span class="info-label">Firma:</span><span class="info-value">Jeronimo Martins Polska S.A.</span></div>
+                <div class="info-item"><span class="info-label">Wartość netto:</span><span class="info-value">750 000 PLN</span></div>
+                <div class="info-item"><span class="info-label">Szacowana marża:</span><span class="info-value">20%</span></div>
+                <div class="info-item"><span class="info-label">Planowane rozpoczęcie:</span><span class="info-value">01.09.2025</span></div>
+            </div>
+            <div class="info-group">
+                <div class="info-group-title">Lokalizacja</div>
+                <div class="info-item"><span class="info-label">Miasto:</span><span class="info-value">Warszawa</span></div>
+                <div class="info-item"><span class="info-label">Typ inwestora:</span><span class="info-value">Komercyjny</span></div>
+            </div>
+            <div class="offer-info-footer">
+                <button class="edit-offer-btn"><i class="fas fa-edit"></i> Edytuj ofertę</button>
+            </div>
+        </div>
+
+        <!-- Tabs Area (right) -->
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-button active" data-tab="summary"><i class="fas fa-chart-line"></i> Podsumowanie</button>
+                <button class="tab-button" data-tab="notes"><i class="fas fa-sticky-note"></i> Notatki</button>
+                <button class="tab-button" data-tab="tasks"><i class="fas fa-tasks"></i> Zadania</button>
+                <button class="tab-button" data-tab="rfq"><i class="fas fa-file-alt"></i> Zapytania ofertowe</button>
+            </div>
+            <div class="tab-content">
+                <div class="tab-pane active" id="summary">
+                    <!-- Podsumowanie content -->
+                </div>
+                <div class="tab-pane" id="notes">
+                    <!-- Notes content -->
+                </div>
+                <div class="tab-pane" id="tasks">
+                    <!-- Tasks content -->
+                </div>
+                <div class="tab-pane" id="rfq">
+                    <!-- RFQ content -->
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
