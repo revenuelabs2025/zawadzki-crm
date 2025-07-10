@@ -540,6 +540,14 @@
 
         // --- EVENT LISTENERS & NAVIGATION ---
         function addDragAndDropListeners() {
+          // Temporary: open first deal details page on click
+          const firstCard = document.getElementById("deal-1");
+          if (firstCard) {
+            firstCard.addEventListener("click", () => {
+              window.location.href = "offer_details.html";
+            });
+          }
+
           document.querySelectorAll('[draggable="true"]').forEach((card) => {
             card.addEventListener("dragstart", (e) => {
               e.dataTransfer.setData("text/plain", card.id);
