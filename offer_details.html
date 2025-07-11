@@ -107,6 +107,23 @@
         .tab-content { padding: 0; overflow-y: auto; flex: 1; }
         .tab-pane { display: none; }
         .tab-pane.active { display: block; padding: 20px; }
+
+        /* RFQ tab styles */
+        #rfq-tab { padding: 20px; }
+        #rfq-tab h2 { margin-top: 0; color: #ed7d23; }
+        #rfq-tab section { margin-bottom: 30px; }
+        #rfq-tab table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        #rfq-tab th, #rfq-tab td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        #rfq-tab th { background: #f8f8f8; }
+        #rfq-tab button { background: #ed7d23; color: #fff; border: none; padding: 10px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; }
+        #rfq-tab button:disabled { background: #ccc; cursor: not-allowed; }
+        .modal-overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; }
+        .modal { background:#fff; padding:20px; border-radius:4px; width:80%; max-width:600px; max-height:80%; overflow:auto; }
+        .modal-header { font-size:18px; margin-bottom:10px; }
+        .modal-body { margin-bottom:10px; }
+        .modal-footer { text-align:right; }
+        .modal-footer button { margin-left:10px; }
+        pre { background:#f4f4f4; padding:10px; border-radius:4px; white-space:pre-wrap; word-wrap:break-word; }
     </style>
 </head>
 <body>
@@ -181,10 +198,58 @@
                     <!-- Tasks content -->
                 </div>
                 <div class="tab-pane" id="rfq">
-                    <!-- RFQ content -->
+                    <div id="rfq-tab">
+                        <h2>Zapytanie ofertowe (Symulacja)</h2>
+                        <section id="subcontractor-list">
+                            <h3>Wybór podwykonawców</h3>
+                            <button id="load-subs">Pobierz podwykonawców (symulacja)</button>
+                            <table id="subs-table" style="display:none;">
+                                <thead>
+                                    <tr>
+                                        <th>Wybierz</th>
+                                        <th>Nazwa</th>
+                                        <th>E-mail</th>
+                                        <th>Region</th>
+                                        <th>Branża</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="subs-tbody"></tbody>
+                            </table>
+                            <button id="send-rfq" disabled>Wyślij zapytanie</button>
+                        </section>
+                        <section id="sent-requests">
+                            <h3>Historia wysłanych zapytań</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Podwykonawca</th>
+                                        <th>E-mail</th>
+                                        <th>Data wysłania</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sent-tbody"></tbody>
+                            </table>
+                        </section>
+                    </div>
+
+                    <!-- Modal podglądu maila -->
+                    <div id="preview-modal" class="modal-overlay">
+                        <div class="modal">
+                            <div class="modal-header">Podgląd wiadomości e-mail</div>
+                            <div class="modal-body">
+                                <pre id="email-preview"></pre>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="cancel-send">Anuluj</button>
+                                <button id="confirm-send">Potwierdź wysyłkę</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+</div>
+<script src="assets/js/offer_details.js"></script>
 </body>
 </html>
