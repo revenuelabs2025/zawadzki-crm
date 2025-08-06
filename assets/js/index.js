@@ -620,24 +620,22 @@
 
         }
 
-        // Add event listener for "Nowy deal/kontakt" button in the header
-        if (addNewButton)
+        // Add event listener for header button (np. "Nowa oferta")
+        if (addNewButton) {
           addNewButton.addEventListener("click", () => {
             if (addOfferModal) {
               addOfferModal.classList.remove("hidden");
-            } else if (kanbanView.classList.contains("hidden")) {
-              // If contacts view is active
+            } else if (kanbanView && kanbanView.classList.contains("hidden")) {
               showToast(
                 "Funkcja dodawania nowego kontaktu będzie dostępna wkrótce!",
               );
             } else {
-              // If kanban view is active
               showToast(
                 "Funkcja dodawania nowego dealu będzie dostępna wkrótce!",
               );
             }
-            // In a real app, this would open a form to create a new deal/contact.
           });
+        }
 
         if (cancelAddOffer && addOfferModal) {
           cancelAddOffer.addEventListener("click", () => {
