@@ -92,6 +92,12 @@
             background: #d97526;
         }
 
+        .quick-tab-btn {
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
         /* Tabs area (right column) */
         .tabs-container {
             background: white;
@@ -140,6 +146,11 @@
             <div class="contact-info-header">
                 <div class="contact-avatar">JK</div>
                 <h3>Jan Kowalski</h3>
+                <div class="ml-auto flex space-x-2">
+                    <button class="quick-tab-btn p-2 text-gray-600 hover:text-gray-800" data-open-tab="notes" title="Notatki"><i class="fas fa-sticky-note"></i></button>
+                    <button class="quick-tab-btn p-2 text-gray-600 hover:text-gray-800" data-open-tab="messages" title="Wiadomości"><i class="fas fa-envelope"></i></button>
+                    <button class="quick-tab-btn p-2 text-gray-600 hover:text-gray-800" data-open-tab="tasks" title="Zadania"><i class="fas fa-tasks"></i></button>
+                </div>
             </div>
             <div class="info-group">
                 <div class="info-group-title">Informacje podstawowe</div>
@@ -195,5 +206,6 @@
             </div>
         </div>
     </div>
+<script src="assets/js/contact_details.js"></script>
 </body>
 </html>
