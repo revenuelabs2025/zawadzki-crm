@@ -86,15 +86,25 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const addTaskBtn = document.getElementById('add-task-btn');
-  const newTaskInput = document.getElementById('new-task-input');
+  const newTaskTitle = document.getElementById('new-task-title');
+  const newTaskContent = document.getElementById('new-task-content');
+  const newTaskUser = document.getElementById('new-task-user');
   const newTaskDate = document.getElementById('new-task-date');
   const tasksList = document.getElementById('tasks-list');
 
-  if (addTaskBtn && newTaskInput && newTaskDate && tasksList) {
+  if (addTaskBtn && newTaskTitle && newTaskContent && newTaskUser && newTaskDate && tasksList) {
+    const crmUsers = ['Anna Nowak', 'Piotr Zieliński', 'Jan Kowalski'];
+    crmUsers.forEach(user => {
+      const opt = document.createElement('option');
+      opt.value = user;
+      opt.textContent = user;
+      newTaskUser.appendChild(opt);
+    });
+
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [
-      { text: 'Oddzwonić do klienta', dueDate: '2024-06-01', completed: false },
-      { text: 'Wysłać prezentację', dueDate: '2024-04-01', completed: false },
-      { text: 'Przygotować ofertę', dueDate: '2024-03-20', completed: true }
+      { title: 'Oddzwonić do klienta', content: '', user: 'Anna Nowak', dueDate: '2024-06-01', completed: false },
+      { title: 'Wysłać prezentację', content: '', user: 'Piotr Zieliński', dueDate: '2024-04-01', completed: false },
+      { title: 'Przygotować ofertę', content: '', user: 'Jan Kowalski', dueDate: '2024-03-20', completed: true }
     ];
 
     function saveTasks() {
@@ -114,11 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
       tasks.forEach((task, index) => {
         const status = getStatus(task);
         const wrapper = document.createElement('div');
-        wrapper.className = 'border p-3 rounded flex justify-between items-center';
+        wrapper.className = 'border p-3 rounded flex justify-between items-start';
         wrapper.innerHTML = `
           <div>
-            <div class="font-medium">${task.text}</div>
-            <div class="text-sm text-gray-600">Do ${new Date(task.dueDate).toLocaleDateString('pl-PL')}</div>
+            <div class="font-medium">${task.title || task.text}</div>
+            <div class="text-sm text-gray-600">${task.user ? task.user + ' – ' : ''}Do ${new Date(task.dueDate).toLocaleDateString('pl-PL')}</div>
+            ${task.content ? `<div class="text-sm mt-1">${task.content}</div>` : ''}
           </div>
           <div class="flex items-center space-x-2">
             <span class="px-2 py-1 rounded text-xs ${status.color}">${status.text}</span>
@@ -139,21 +150,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     addTaskBtn.addEventListener('click', () => {
-      const text = newTaskInput.value.trim();
+      const title = newTaskTitle.value.trim();
+      const content = newTaskContent.value.trim();
+      const user = newTaskUser.value;
       const date = newTaskDate.value;
-      if (!text || !date) return;
-      tasks.push({ text, dueDate: date, completed: false });
+      if (!title || !user || !date) return;
+      tasks.push({ title, content, user, dueDate: date, completed: false });
       saveTasks();
       renderTasks();
-      newTaskInput.value = '';
+      newTaskTitle.value = '';
+      newTaskContent.value = '';
       newTaskDate.value = '';
+      newTaskUser.selectedIndex = 0;
     });
 
     function checkNotifications() {
       const today = new Date().toISOString().split('T')[0];
       tasks.forEach(task => {
         if (!task.completed && task.dueDate === today && !task.notified) {
-          alert(`Masz zadanie na dziś: ${task.text}`);
+          alert(`Masz zadanie na dziś: ${task.title || task.text}`);
           task.notified = true;
         }
       });
