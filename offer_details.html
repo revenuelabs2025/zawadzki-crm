@@ -185,8 +185,10 @@
         <div class="tabs-container">
             <div class="tabs-header">
                 <button class="tab-button active" data-tab="notes"><i class="fas fa-sticky-note"></i> Notatki</button>
+                <button class="tab-button" data-tab="messages"><i class="fas fa-envelope"></i> Wiadomości</button>
                 <button class="tab-button" data-tab="tasks"><i class="fas fa-tasks"></i> Zadania</button>
                 <button class="tab-button" data-tab="rfq"><i class="fas fa-file-alt"></i> Zapytania ofertowe</button>
+                <button class="tab-button" data-tab="files"><i class="fas fa-paperclip"></i> Pliki</button>
             </div>
             <div class="tab-content">
                 <div class="tab-pane active" id="notes">
@@ -208,6 +210,9 @@
                             <div>Dodano nową ofertę do bazy CRM.</div>
                         </div>
                     </div>
+                </div>
+                <div class="tab-pane" id="messages">
+                    <div id="messages-list" class="space-y-4"></div>
                 </div>
                 <div class="tab-pane" id="tasks">
                     <div class="mb-4 space-y-2">
@@ -270,6 +275,13 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="tab-pane" id="files">
+                    <div class="mb-4">
+                        <input type="file" id="file-input" class="hidden" />
+                        <button id="add-file-btn" class="brand-accent px-4 py-2 rounded text-white">Dodaj plik</button>
+                    </div>
+                    <div id="files-list" class="space-y-2"></div>
                 </div>
             </div>
         </div>

@@ -19,9 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  const addNoteBtn = document.getElementById('add-note-btn');
-  const newNoteInput = document.getElementById('new-note-input');
-  const notesList = document.getElementById('notes-list');
+    const addNoteBtn = document.getElementById('add-note-btn');
+    const newNoteInput = document.getElementById('new-note-input');
+    const notesList = document.getElementById('notes-list');
 
   if (addNoteBtn && newNoteInput && notesList) {
     addNoteBtn.addEventListener('click', () => {
@@ -34,11 +34,58 @@ document.addEventListener('DOMContentLoaded', function () {
       notesList.prepend(note);
       newNoteInput.value = '';
     });
-  }
+    }
 
-  const addTaskBtn = document.getElementById('add-task-btn');
-  const newTaskTitle = document.getElementById('new-task-title');
-  const newTaskContent = document.getElementById('new-task-content');
+    const messagesList = document.getElementById('messages-list');
+    if (messagesList) {
+      const messages = [
+        {
+          direction: 'outgoing',
+          user: 'Magda Cieciorowska',
+          date: '01.04.2024',
+          subject: 'Powitanie i przedstawienie oferty',
+          body: 'Dzień dobry, w załączeniu przesyłam ofertę naszej firmy.'
+        },
+        {
+          direction: 'incoming',
+          user: 'Damian Zawadzki',
+          date: '02.04.2024',
+          subject: 'Odpowiedź na ofertę',
+          body: 'Dziękuję za ofertę. Chciałbym uzyskać więcej informacji.'
+        }
+      ];
+
+      messages.forEach(msg => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'border rounded';
+
+        const header = document.createElement('div');
+        header.className = 'p-3 flex justify-between items-center cursor-pointer';
+        header.innerHTML = `
+          <div>
+            <div class="font-medium">${msg.subject}</div>
+            <div class="text-sm text-gray-600">${msg.direction === 'incoming' ? 'Odebrano' : 'Wysłano'} ${msg.date}</div>
+          </div>
+          <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">${msg.user}</span>
+        `;
+
+        const body = document.createElement('div');
+        body.className = 'px-3 pb-3 text-sm hidden';
+        body.textContent = msg.body;
+
+        header.addEventListener('click', () => {
+          body.classList.toggle('hidden');
+        });
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(body);
+        messagesList.appendChild(wrapper);
+      });
+    }
+
+    const addTaskBtn = document.getElementById('add-task-btn');
+    const newTaskTitle = document.getElementById('new-task-title');
+    const newTaskContent = document.getElementById('new-task-content');
   const newTaskUser = document.getElementById('new-task-user');
   const newTaskDate = document.getElementById('new-task-date');
   const tasksList = document.getElementById('tasks-list');
@@ -138,12 +185,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     renderTasks();
     checkNotifications();
-    setInterval(checkNotifications, 60000);
-  }
+      setInterval(checkNotifications, 60000);
+    }
 
-  function initRFQ() {
-    const loadBtn = document.getElementById('load-subs');
-    if (!loadBtn) return;
+    const addFileBtn = document.getElementById('add-file-btn');
+    const fileInput = document.getElementById('file-input');
+    const filesList = document.getElementById('files-list');
+
+    if (addFileBtn && fileInput && filesList) {
+      addFileBtn.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+        const item = document.createElement('div');
+        item.className = 'border p-3 rounded flex justify-between';
+        item.innerHTML = `<div>${file.name}</div><div class="text-sm text-gray-600">${file.type || 'brak'} – ${(file.size / 1024).toFixed(1)} KB</div>`;
+        filesList.appendChild(item);
+        fileInput.value = '';
+      });
+    }
+
+    function initRFQ() {
+      const loadBtn = document.getElementById('load-subs');
+      if (!loadBtn) return;
     const sendBtn = document.getElementById('send-rfq');
     const cancelBtn = document.getElementById('cancel-send');
     const confirmBtn = document.getElementById('confirm-send');
