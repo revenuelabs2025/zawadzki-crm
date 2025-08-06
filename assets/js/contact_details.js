@@ -42,30 +42,45 @@ document.addEventListener('DOMContentLoaded', () => {
   if (emailsList) {
     const emails = [
       {
+        direction: 'outgoing',
         user: 'Anna Nowak',
         date: '01.04.2024',
         subject: 'Powitanie i przedstawienie oferty',
         body: 'Dzień dobry, w załączeniu przesyłam ofertę naszej firmy.'
       },
       {
-        user: 'Piotr Zieliński',
-        date: '20.03.2024',
-        subject: 'Przypomnienie o spotkaniu',
-        body: 'Przypominam o jutrzejszym spotkaniu online o 10:00.'
+        direction: 'incoming',
+        user: 'Jan Kowalski',
+        date: '02.04.2024',
+        subject: 'Odpowiedź na ofertę',
+        body: 'Dziękuję za ofertę. Chciałbym uzyskać więcej informacji.'
       }
     ];
 
     emails.forEach(email => {
       const wrapper = document.createElement('div');
-      wrapper.className = 'border p-3 rounded';
-      wrapper.innerHTML = `
-        <div class="flex justify-between items-center mb-1">
+      wrapper.className = 'border rounded';
+
+      const header = document.createElement('div');
+      header.className = 'p-3 flex justify-between items-center cursor-pointer';
+      header.innerHTML = `
+        <div>
           <div class="font-medium">${email.subject}</div>
-          <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">${email.user}</span>
+          <div class="text-sm text-gray-600">${email.direction === 'incoming' ? 'Odebrano' : 'Wysłano'} ${email.date}</div>
         </div>
-        <div class="text-sm text-gray-600 mb-1">Wysłano ${email.date}</div>
-        <div class="text-sm">${email.body}</div>
+        <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">${email.user}</span>
       `;
+
+      const body = document.createElement('div');
+      body.className = 'px-3 pb-3 text-sm hidden';
+      body.textContent = email.body;
+
+      header.addEventListener('click', () => {
+        body.classList.toggle('hidden');
+      });
+
+      wrapper.appendChild(header);
+      wrapper.appendChild(body);
       emailsList.appendChild(wrapper);
     });
   }
