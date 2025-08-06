@@ -37,4 +37,36 @@ document.addEventListener('DOMContentLoaded', () => {
       newNoteInput.value = '';
     });
   }
+
+  const emailsList = document.getElementById('emails-list');
+  if (emailsList) {
+    const emails = [
+      {
+        user: 'Anna Nowak',
+        date: '01.04.2024',
+        subject: 'Powitanie i przedstawienie oferty',
+        body: 'Dzień dobry, w załączeniu przesyłam ofertę naszej firmy.'
+      },
+      {
+        user: 'Piotr Zieliński',
+        date: '20.03.2024',
+        subject: 'Przypomnienie o spotkaniu',
+        body: 'Przypominam o jutrzejszym spotkaniu online o 10:00.'
+      }
+    ];
+
+    emails.forEach(email => {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'border p-3 rounded';
+      wrapper.innerHTML = `
+        <div class="flex justify-between items-center mb-1">
+          <div class="font-medium">${email.subject}</div>
+          <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">${email.user}</span>
+        </div>
+        <div class="text-sm text-gray-600 mb-1">Wysłano ${email.date}</div>
+        <div class="text-sm">${email.body}</div>
+      `;
+      emailsList.appendChild(wrapper);
+    });
+  }
 });
