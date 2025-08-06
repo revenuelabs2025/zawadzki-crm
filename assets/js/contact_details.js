@@ -17,10 +17,6 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', () => activateTab(btn.getAttribute('data-tab')));
   });
 
-  document.querySelectorAll('[data-open-tab]').forEach(el => {
-    el.addEventListener('click', () => activateTab(el.getAttribute('data-open-tab')));
-  });
-
   const addNoteBtn = document.getElementById('add-note-btn');
   const newNoteInput = document.getElementById('new-note-input');
   const notesList = document.getElementById('notes-list');
