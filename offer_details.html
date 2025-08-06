@@ -212,7 +212,24 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="messages">
+                    <div class="mb-4">
+                        <button id="add-manual-message-btn" class="brand-accent px-4 py-2 rounded text-white">Dodaj ręcznie wiadomość email</button>
+                    </div>
                     <div id="messages-list" class="space-y-4"></div>
+
+                    <!-- Modal dodawania wiadomości -->
+                    <div id="manual-message-modal" class="modal-overlay">
+                        <div class="modal">
+                            <div class="modal-header">Dodaj wiadomość e-mail</div>
+                            <div class="modal-body">
+                                <textarea id="manual-message-input" class="w-full border rounded p-2" rows="10" placeholder="Wklej treść wiadomości"></textarea>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="cancel-manual-message">Anuluj</button>
+                                <button id="save-manual-message">Zapisz</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane" id="tasks">
                     <div class="mb-4 space-y-2">
