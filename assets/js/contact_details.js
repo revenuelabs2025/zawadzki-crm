@@ -84,4 +84,84 @@ document.addEventListener('DOMContentLoaded', () => {
       emailsList.appendChild(wrapper);
     });
   }
+
+  const addTaskBtn = document.getElementById('add-task-btn');
+  const newTaskInput = document.getElementById('new-task-input');
+  const newTaskDate = document.getElementById('new-task-date');
+  const tasksList = document.getElementById('tasks-list');
+
+  if (addTaskBtn && newTaskInput && newTaskDate && tasksList) {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [
+      { text: 'Oddzwonić do klienta', dueDate: '2024-06-01', completed: false },
+      { text: 'Wysłać prezentację', dueDate: '2024-04-01', completed: false },
+      { text: 'Przygotować ofertę', dueDate: '2024-03-20', completed: true }
+    ];
+
+    function saveTasks() {
+      localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function getStatus(task) {
+      const today = new Date().setHours(0, 0, 0, 0);
+      const due = new Date(task.dueDate).setHours(0, 0, 0, 0);
+      if (task.completed) return { text: 'wykonane', color: 'bg-green-100 text-green-800' };
+      if (due < today) return { text: 'przeterminowane', color: 'bg-red-100 text-red-800' };
+      return { text: 'oczekujące', color: 'bg-yellow-100 text-yellow-800' };
+    }
+
+    function renderTasks() {
+      tasksList.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const status = getStatus(task);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'border p-3 rounded flex justify-between items-center';
+        wrapper.innerHTML = `
+          <div>
+            <div class="font-medium">${task.text}</div>
+            <div class="text-sm text-gray-600">Do ${new Date(task.dueDate).toLocaleDateString('pl-PL')}</div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="px-2 py-1 rounded text-xs ${status.color}">${status.text}</span>
+            ${task.completed ? '' : `<button data-index="${index}" class="complete-task-btn bg-green-500 text-white text-xs px-2 py-1 rounded">Zakończ</button>`}
+          </div>
+        `;
+        tasksList.appendChild(wrapper);
+      });
+
+      document.querySelectorAll('.complete-task-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = btn.getAttribute('data-index');
+          tasks[idx].completed = true;
+          saveTasks();
+          renderTasks();
+        });
+      });
+    }
+
+    addTaskBtn.addEventListener('click', () => {
+      const text = newTaskInput.value.trim();
+      const date = newTaskDate.value;
+      if (!text || !date) return;
+      tasks.push({ text, dueDate: date, completed: false });
+      saveTasks();
+      renderTasks();
+      newTaskInput.value = '';
+      newTaskDate.value = '';
+    });
+
+    function checkNotifications() {
+      const today = new Date().toISOString().split('T')[0];
+      tasks.forEach(task => {
+        if (!task.completed && task.dueDate === today && !task.notified) {
+          alert(`Masz zadanie na dziś: ${task.text}`);
+          task.notified = true;
+        }
+      });
+      saveTasks();
+    }
+
+    renderTasks();
+    checkNotifications();
+    setInterval(checkNotifications, 60000);
+  }
 });

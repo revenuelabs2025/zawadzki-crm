@@ -218,7 +218,12 @@
                     <div id="emails-list" class="space-y-4"></div>
                 </div>
                 <div class="tab-pane" id="tasks">
-                    <!-- Tasks content -->
+                    <div class="mb-4 flex space-x-2">
+                        <input id="new-task-input" type="text" placeholder="Dodaj zadanie" class="flex-1 border rounded px-3 py-2" />
+                        <input id="new-task-date" type="date" class="border rounded px-3 py-2" />
+                        <button id="add-task-btn" class="brand-accent px-4 py-2 rounded text-white">Dodaj zadanie</button>
+                    </div>
+                    <div id="tasks-list" class="space-y-4"></div>
                 </div>
             </div>
         </div>
