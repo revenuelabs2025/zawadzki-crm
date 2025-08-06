@@ -326,7 +326,7 @@
           1: [
             {
               type: "note",
-              user: "Jan Kowalski",
+              user: "Igor Dąbrowski",
               text: "Klient prosi o aktualizację kosztorysu z uwzględnieniem świetlików.",
               timestamp: "2025-07-01 14:30",
             },
@@ -340,13 +340,13 @@
           8: [
             {
               type: "call",
-              user: "Anna Nowak",
+              user: "Klaudia Brożyna",
               text: "Rozmowa telefoniczna z p. dyrektorem. Przesłać finalną wersję umowy do piątku.",
               timestamp: "2025-07-02 11:15",
             },
             {
               type: "email",
-              user: "Anna Nowak",
+              user: "Łukasz Zawadzki",
               text: "Wysłano zrewidowaną ofertę.",
               timestamp: "2025-06-28 16:05",
             },
