@@ -148,7 +148,7 @@
                 <h3>Jan Kowalski</h3>
                 <div class="ml-auto flex space-x-2">
                     <button class="quick-tab-btn p-2 text-gray-600 hover:text-gray-800" data-open-tab="notes" title="Notatki"><i class="fas fa-sticky-note"></i></button>
-                    <button class="quick-tab-btn p-2 text-gray-600 hover:text-gray-800" data-open-tab="messages" title="Wiadomości"><i class="fas fa-envelope"></i></button>
+                    <button class="quick-tab-btn p-2 text-gray-600 hover:text-gray-800" data-open-tab="email" title="E-maile"><i class="fas fa-envelope"></i></button>
                     <button class="quick-tab-btn p-2 text-gray-600 hover:text-gray-800" data-open-tab="tasks" title="Zadania"><i class="fas fa-tasks"></i></button>
                 </div>
             </div>
@@ -187,7 +187,7 @@
             <div class="tabs-header">
                 <button class="tab-button active" data-tab="activity"><i class="fas fa-chart-line"></i> Podsumowanie aktywności</button>
                 <button class="tab-button" data-tab="notes"><i class="fas fa-sticky-note"></i> Notatki</button>
-                <button class="tab-button" data-tab="messages"><i class="fas fa-envelope"></i> Wiadomości</button>
+                <button class="tab-button" data-tab="email"><i class="fas fa-envelope"></i> E-maile</button>
                 <button class="tab-button" data-tab="tasks"><i class="fas fa-tasks"></i> Zadania</button>
             </div>
             <div class="tab-content">
@@ -214,8 +214,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane" id="messages">
-                    <!-- Messages content -->
+                <div class="tab-pane" id="email">
+                    <div id="emails-list" class="space-y-4"></div>
                 </div>
                 <div class="tab-pane" id="tasks">
                     <!-- Tasks content -->
