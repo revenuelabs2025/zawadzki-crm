@@ -55,16 +55,22 @@ document.addEventListener('DOMContentLoaded', function () {
         }
       ];
 
-      messages.forEach(msg => {
+      function renderMessage(msg) {
         const wrapper = document.createElement('div');
         wrapper.className = 'border rounded';
 
         const header = document.createElement('div');
         header.className = 'p-3 flex justify-between items-center cursor-pointer';
+        const directionText =
+          msg.direction === 'incoming'
+            ? 'Odebrano'
+            : msg.direction === 'manual'
+            ? 'Dodano'
+            : 'Wysłano';
         header.innerHTML = `
           <div>
             <div class="font-medium">${msg.subject}</div>
-            <div class="text-sm text-gray-600">${msg.direction === 'incoming' ? 'Odebrano' : 'Wysłano'} ${msg.date}</div>
+            <div class="text-sm text-gray-600">${directionText} ${msg.date}</div>
           </div>
           <span class="bg-gray-200 text-gray-800 px-2 py-1 rounded text-xs">${msg.user}</span>
         `;
@@ -80,7 +86,42 @@ document.addEventListener('DOMContentLoaded', function () {
         wrapper.appendChild(header);
         wrapper.appendChild(body);
         messagesList.appendChild(wrapper);
-      });
+      }
+
+      messages.forEach(renderMessage);
+
+      const addManualBtn = document.getElementById('add-manual-message-btn');
+      const manualModal = document.getElementById('manual-message-modal');
+      const manualInput = document.getElementById('manual-message-input');
+      const manualCancel = document.getElementById('cancel-manual-message');
+      const manualSave = document.getElementById('save-manual-message');
+
+      if (addManualBtn && manualModal && manualInput && manualCancel && manualSave) {
+        addManualBtn.addEventListener('click', () => {
+          manualModal.style.display = 'flex';
+        });
+
+        manualCancel.addEventListener('click', () => {
+          manualModal.style.display = 'none';
+          manualInput.value = '';
+        });
+
+        manualSave.addEventListener('click', () => {
+          const text = manualInput.value.trim();
+          if (!text) return;
+          const lines = text.split('\n');
+          const subject = lines[0] || 'Wiadomość';
+          renderMessage({
+            direction: 'manual',
+            user: 'Użytkownik',
+            date: new Date().toLocaleDateString('pl-PL'),
+            subject,
+            body: text
+          });
+          manualInput.value = '';
+          manualModal.style.display = 'none';
+        });
+      }
     }
 
     const addTaskBtn = document.getElementById('add-task-btn');
