@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const date = new Date().toLocaleDateString('pl-PL');
       const note = document.createElement('div');
       note.className = 'border p-3 rounded';
-      note.innerHTML = `<div class="text-sm text-gray-600 mb-1">Anna Nowak – ${date}</div><div>${text}</div>`;
+      note.innerHTML = `<div class="text-sm text-gray-600 mb-1">Dawid Śmietański – ${date}</div><div>${text}</div>`;
       notesList.prepend(note);
       newNoteInput.value = '';
     });
@@ -43,14 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const emails = [
       {
         direction: 'outgoing',
-        user: 'Anna Nowak',
+        user: 'Magda Cieciorowska',
         date: '01.04.2024',
         subject: 'Powitanie i przedstawienie oferty',
         body: 'Dzień dobry, w załączeniu przesyłam ofertę naszej firmy.'
       },
       {
         direction: 'incoming',
-        user: 'Jan Kowalski',
+        user: 'Damian Zawadzki',
         date: '02.04.2024',
         subject: 'Odpowiedź na ofertę',
         body: 'Dziękuję za ofertę. Chciałbym uzyskać więcej informacji.'
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const tasksList = document.getElementById('tasks-list');
 
   if (addTaskBtn && newTaskTitle && newTaskContent && newTaskUser && newTaskDate && tasksList) {
-    const crmUsers = ['Anna Nowak', 'Piotr Zieliński', 'Jan Kowalski'];
+    const crmUsers = ['Dawid Śmietański', 'Magda Cieciorowska', 'Damian Zawadzki', 'Łukasz Zawadzki', 'Igor Dąbrowski', 'Klaudia Brożyna'];
     crmUsers.forEach(user => {
       const opt = document.createElement('option');
       opt.value = user;
@@ -102,9 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     let tasks = JSON.parse(localStorage.getItem('tasks')) || [
-      { title: 'Oddzwonić do klienta', content: '', user: 'Anna Nowak', dueDate: '2024-06-01', completed: false },
-      { title: 'Wysłać prezentację', content: '', user: 'Piotr Zieliński', dueDate: '2024-04-01', completed: false },
-      { title: 'Przygotować ofertę', content: '', user: 'Jan Kowalski', dueDate: '2024-03-20', completed: true }
+      { title: 'Oddzwonić do klienta', content: '', user: 'Łukasz Zawadzki', dueDate: '2024-06-01', completed: false },
+      { title: 'Wysłać prezentację', content: '', user: 'Igor Dąbrowski', dueDate: '2024-04-01', completed: false },
+      { title: 'Przygotować ofertę', content: '', user: 'Klaudia Brożyna', dueDate: '2024-03-20', completed: true }
     ];
 
     function saveTasks() {
