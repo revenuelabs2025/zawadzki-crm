@@ -103,9 +103,36 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   const addNewButton = document.getElementById("add-new-button");
-  if (addNewButton) {
+  const modal = document.getElementById("add-contact-modal");
+  const cancelBtn = document.getElementById("cancel-add-contact");
+  const form = document.getElementById("add-contact-form");
+
+  if (addNewButton && modal) {
     addNewButton.addEventListener("click", () => {
-      showToast("Funkcja dodawania nowego kontaktu będzie dostępna wkrótce!");
+      modal.classList.remove("hidden");
+    });
+  }
+
+  if (cancelBtn && modal) {
+    cancelBtn.addEventListener("click", () => {
+      modal.classList.add("hidden");
+    });
+  }
+
+  if (modal) {
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.add("hidden");
+      }
+    });
+  }
+
+  if (form) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      modal.classList.add("hidden");
+      form.reset();
+      showToast("Kontakt został dodany");
     });
   }
 
