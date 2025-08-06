@@ -106,6 +106,223 @@
     </div>
 
 
+    <!-- Add Offer Modal -->
+    <div
+      id="add-offer-modal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-40"
+    >
+      <div
+        class="bg-white p-6 rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-semibold">Nowa oferta</h2>
+          <button
+            type="button"
+            id="close-add-offer"
+            class="text-gray-500 hover:text-gray-700"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="add-offer-form" class="space-y-4">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Nazwa inwestycji <span class="text-red-500">*</span></label
+              >
+              <input
+                type="text"
+                id="offer-name"
+                required
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Właściciel oferty <span class="text-red-500">*</span></label
+              >
+              <select
+                id="offer-owner"
+                required
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              >
+                <option value="">Wybierz</option>
+                <option>Jan Kowalski</option>
+                <option>Agnieszka Nowak</option>
+                <option>Piotr Wiśniewski</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Status <span class="text-red-500">*</span></label
+              >
+              <select
+                id="offer-status"
+                required
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              >
+                <option value="">Wybierz</option>
+                <option>Analiza techniczna</option>
+                <option>Wstępny kosztorys</option>
+                <option>Oferta handlowa wysłana</option>
+                <option>Negocjacje / rewizje</option>
+                <option>Wstrzymane</option>
+                <option>Wygrane</option>
+                <option>Przegrane</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Firma</label
+              >
+              <input
+                type="text"
+                id="offer-company"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Data utworzenia</label
+              >
+              <input
+                type="date"
+                id="offer-open-date"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Deadline oferty</label
+              >
+              <input
+                type="date"
+                id="offer-deadline"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Wartość oferty</label
+              >
+              <input
+                type="number"
+                id="offer-value"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Rodzaj inwestycji</label
+              >
+              <input
+                type="text"
+                id="offer-investment-type"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Typ dachu</label
+              >
+              <input
+                type="text"
+                id="offer-roof-type"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Typ elewacji</label
+              >
+              <input
+                type="text"
+                id="offer-facade-type"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Powierzchnia dachu</label
+              >
+              <input
+                type="number"
+                id="offer-roof-area"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Powierzchnia elewacji</label
+              >
+              <input
+                type="number"
+                id="offer-facade-area"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Lokalizacja</label
+              >
+              <input
+                type="text"
+                id="offer-location"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Miejscowość</label
+              >
+              <input
+                type="text"
+                id="offer-city"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Województwo</label
+              >
+              <input
+                type="text"
+                id="offer-voivodeship"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Powiązany kontakt</label
+              >
+              <select
+                id="offer-contact"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              >
+                <option value="">Wybierz</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex justify-end space-x-2 pt-4">
+            <button
+              type="button"
+              id="cancel-add-offer"
+              class="px-4 py-2 bg-gray-200 rounded-md"
+            >
+              Anuluj
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 brand-accent rounded-md text-white"
+            >
+              Zapisz
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
     <!-- Toast Notification -->
     <div
       id="toast"

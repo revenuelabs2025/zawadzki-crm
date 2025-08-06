@@ -378,6 +378,11 @@
         const addNewBtnText = document.getElementById("add-new-btn-text");
         const newActivityInput = document.getElementById("new-activity-input");
         const saveActivityButton = document.getElementById("save-activity-btn");
+        const addOfferModal = document.getElementById("add-offer-modal");
+        const cancelAddOffer = document.getElementById("cancel-add-offer");
+        const closeAddOffer = document.getElementById("close-add-offer");
+        const addOfferForm = document.getElementById("add-offer-form");
+        const offerContactSelect = document.getElementById("offer-contact");
 
         // --- CONFIG ---
         const techIcons = {
@@ -404,6 +409,15 @@
           Podwykonawca: "bg-purple-100 text-purple-800",
           Dostawca: "bg-indigo-100 text-indigo-800",
         };
+
+        if (offerContactSelect) {
+          contacts.forEach((contact) => {
+            const option = document.createElement("option");
+            option.value = contact.id;
+            option.textContent = contact.name;
+            offerContactSelect.appendChild(option);
+          });
+        }
 
         // --- HELPER FUNCTIONS ---
         function formatCurrency(value) {
@@ -607,20 +621,52 @@
         }
 
         // Add event listener for "Nowy deal/kontakt" button in the header
-        if (addNewButton) addNewButton.addEventListener("click", () => {
-          if (kanbanView.classList.contains("hidden")) {
-            // If contacts view is active
-            showToast(
-              "Funkcja dodawania nowego kontaktu będzie dostępna wkrótce!",
-            );
-          } else {
-            // If kanban view is active
-            showToast(
-              "Funkcja dodawania nowego dealu będzie dostępna wkrótce!",
-            );
-          }
-          // In a real app, this would open a form to create a new deal/contact.
-        });
+        if (addNewButton)
+          addNewButton.addEventListener("click", () => {
+            if (addOfferModal) {
+              addOfferModal.classList.remove("hidden");
+            } else if (kanbanView.classList.contains("hidden")) {
+              // If contacts view is active
+              showToast(
+                "Funkcja dodawania nowego kontaktu będzie dostępna wkrótce!",
+              );
+            } else {
+              // If kanban view is active
+              showToast(
+                "Funkcja dodawania nowego dealu będzie dostępna wkrótce!",
+              );
+            }
+            // In a real app, this would open a form to create a new deal/contact.
+          });
+
+        if (cancelAddOffer && addOfferModal) {
+          cancelAddOffer.addEventListener("click", () => {
+            addOfferModal.classList.add("hidden");
+          });
+        }
+
+        if (closeAddOffer && addOfferModal) {
+          closeAddOffer.addEventListener("click", () => {
+            addOfferModal.classList.add("hidden");
+          });
+        }
+
+        if (addOfferModal) {
+          addOfferModal.addEventListener("click", (e) => {
+            if (e.target === addOfferModal) {
+              addOfferModal.classList.add("hidden");
+            }
+          });
+        }
+
+        if (addOfferForm) {
+          addOfferForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            addOfferModal.classList.add("hidden");
+            addOfferForm.reset();
+            showToast("Oferta została dodana");
+          });
+        }
 
         // Sidebar Navigation
         if (kanbanLink && contactsLink && kanbanView && contactsView) {
