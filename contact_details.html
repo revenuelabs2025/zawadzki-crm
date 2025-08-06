@@ -195,7 +195,24 @@
                     <!-- Activity summary and items as before -->
                 </div>
                 <div class="tab-pane" id="notes">
-                    <!-- Notes content -->
+                    <div class="mb-4 flex space-x-2">
+                        <input id="new-note-input" type="text" placeholder="Dodaj notatkę" class="flex-1 border rounded px-3 py-2" />
+                        <button id="add-note-btn" class="brand-accent px-4 py-2 rounded text-white">Dodaj notatkę</button>
+                    </div>
+                    <div id="notes-list" class="space-y-4">
+                        <div class="border p-3 rounded">
+                            <div class="text-sm text-gray-600 mb-1">Anna Nowak – 01.04.2024</div>
+                            <div>Rozmowa telefoniczna z klientem w sprawie nowej oferty.</div>
+                        </div>
+                        <div class="border p-3 rounded">
+                            <div class="text-sm text-gray-600 mb-1">Piotr Zieliński – 20.03.2024</div>
+                            <div>Wysłał zapytanie o możliwości integracji.</div>
+                        </div>
+                        <div class="border p-3 rounded">
+                            <div class="text-sm text-gray-600 mb-1">Anna Nowak – 15.03.2024</div>
+                            <div>Dodano nowy kontakt do bazy CRM.</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="tab-pane" id="messages">
                     <!-- Messages content -->
