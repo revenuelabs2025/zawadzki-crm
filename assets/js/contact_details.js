@@ -134,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="flex items-center space-x-2">
             <span class="px-2 py-1 rounded text-xs ${status.color}">${status.text}</span>
             ${task.completed ? '' : `<button data-index="${index}" class="complete-task-btn bg-green-500 text-white text-xs px-2 py-1 rounded">Zakończ</button>`}
+            <button data-index="${index}" class="delete-task-btn bg-red-500 text-white text-xs px-2 py-1 rounded">Usuń</button>
           </div>
         `;
         tasksList.appendChild(wrapper);
@@ -143,6 +144,15 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
           const idx = btn.getAttribute('data-index');
           tasks[idx].completed = true;
+          saveTasks();
+          renderTasks();
+        });
+      });
+
+      document.querySelectorAll('.delete-task-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const idx = btn.getAttribute('data-index');
+          tasks.splice(idx, 1);
           saveTasks();
           renderTasks();
         });
