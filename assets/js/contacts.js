@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (error) {
       console.error(`Błąd pobierania ${table}:`, error);
+      showToast("Nie udało się załadować danych formularza");
       return;
     }
 
@@ -44,12 +45,10 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  let selectsLoaded = false;
+
   async function loadSelectOptions() {
-    await populateSelect(
-      "profiles",
-      document.getElementById("contact-owner"),
-      "full_name"
-    );
+    await populateSelect("profiles", document.getElementById("contact-owner"));
     await populateSelect(
       "contact_types",
       document.getElementById("contact-type")
@@ -62,6 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
       "acquisition_sources",
       document.getElementById("contact-source")
     );
+    selectsLoaded = true;
   }
 
   async function loadContacts() {
@@ -158,7 +158,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("add-contact-form");
 
   if (addNewButton && modal) {
-    addNewButton.addEventListener("click", () => {
+    addNewButton.addEventListener("click", async () => {
+      if (!selectsLoaded) {
+        await loadSelectOptions();
+      }
       modal.classList.remove("hidden");
     });
   }
@@ -191,19 +194,37 @@ document.addEventListener("DOMContentLoaded", function () {
       const [firstName, ...rest] = fullName.split(" ");
       const lastName = rest.join(" ");
 
+      const ownerId = parseInt(
+        document.getElementById("contact-owner").value,
+        10,
+      );
+      const email = document.getElementById("contact-email").value.trim();
+
+      if (!fullName || !ownerId || !email) {
+        showToast("Imię i nazwisko, właściciel i email są wymagane");
+        return;
+      }
+
       const contactData = {
         first_name: firstName || "",
         last_name: lastName || "",
-        owner_id: document.getElementById("contact-owner").value,
-        contact_type_id: document.getElementById("contact-type").value,
+        owner_id: ownerId,
+        contact_type_id:
+          parseInt(document.getElementById("contact-type").value, 10) || null,
         phone: document.getElementById("contact-phone").value.trim() || null,
-        email: document.getElementById("contact-email").value.trim(),
-        company_name: document.getElementById("contact-company").value.trim() || null,
+        email,
+        company_name:
+          document.getElementById("contact-company").value.trim() || null,
         nip: document.getElementById("contact-nip").value.trim() || null,
         address: document.getElementById("contact-address").value.trim() || null,
         city: document.getElementById("contact-city").value.trim() || null,
-        voivodeship_id: document.getElementById("contact-voivodeship").value || null,
-        acquisition_source_id: document.getElementById("contact-source").value || null,
+        voivodeship_id:
+          parseInt(
+            document.getElementById("contact-voivodeship").value,
+            10,
+          ) || null,
+        acquisition_source_id:
+          parseInt(document.getElementById("contact-source").value, 10) || null,
         created_at: new Date().toISOString(),
         last_activity_at: new Date().toISOString(),
       };
