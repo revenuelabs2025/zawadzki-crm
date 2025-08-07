@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        const username = usernameInput.value;
-        const password = passwordInput.value;
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
 
         const { data: sessionData, error: signInError } = await window.supabaseClient.auth.signInWithPassword({
             email: username,
@@ -51,13 +51,29 @@ document.addEventListener('DOMContentLoaded', function() {
         const { data: profileData, error: profileError } = await window.supabaseClient
             .from('profiles')
             .select('id, full_name')
-            .eq('id', user.id)
-            .single();
 
-        if (profileError) {
-            console.error('Profile fetch error:', profileError);
-            showToast('Nie udało się pobrać profilu.', 'error');
-            return;
+            .eq('login', username)
+            .eq('pass', password);
+
+        if (error) {
+            console.error('Login error:', error);
+            console.error('Status:', error.status);
+            console.error('Details:', error.details);
+            console.error('Hint:', error.hint);
+            if (error.status === 401 || error.status === 403) {
+                showToast('Brak uprawnień do wykonania tej operacji.', 'error');
+            } else {
+                showToast(error.message || 'Nieprawidłowy login lub hasło.', 'error');
+            }
+        } else if (!data || data.length === 0) {
+            showToast('Nieprawidłowy login lub hasło.', 'error');
+        } else {
+            const user = data[0];
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            showToast('Logowanie pomyślne!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
         }
 
         localStorage.setItem('currentUser', JSON.stringify(profileData));

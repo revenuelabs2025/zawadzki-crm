@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
     registerForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        const login = loginInput.value;
-        const password = passwordInput.value;
-        const fullName = fullNameInput.value;
+        const login = loginInput.value.trim();
+        const password = passwordInput.value.trim();
+        const fullName = fullNameInput.value.trim();
 
         const { data, error } = await window.supabaseClient.auth.signUp({
             email: login,
@@ -43,7 +43,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (error) {
-            showToast(error.message, 'error');
+            console.error('Registration error:', error);
+            console.error('Status:', error.status);
+            console.error('Details:', error.details);
+            console.error('Hint:', error.hint);
+            if (error.status === 401 || error.status === 403) {
+                showToast('Brak uprawnień do wykonania tej operacji.', 'error');
+            } else {
+                showToast(error.message, 'error');
+            }
         } else {
             showToast('Rejestracja pomyślna!', 'success');
         }
