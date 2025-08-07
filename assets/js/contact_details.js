@@ -185,4 +185,31 @@ document.addEventListener('DOMContentLoaded', () => {
     checkNotifications();
     setInterval(checkNotifications, 60000);
   }
+
+  const filesList = document.getElementById('files-list');
+  const contactId = new URLSearchParams(window.location.search).get('id') || '00000000-0000-0000-0000-000000000000';
+
+  async function loadFiles() {
+    if (!filesList) return;
+    const { data, error } = await sb
+      .from('files')
+      .select('*')
+      .eq('entity_type', 'contact')
+      .eq('entity_id', contactId)
+      .order('uploaded_at', { ascending: false });
+
+    if (error) {
+      console.error('Error loading files:', error.message);
+      return;
+    }
+    filesList.innerHTML = '';
+    data.forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'border p-3 rounded flex justify-between';
+      item.innerHTML = `<a href="${f.file_url}" target="_blank" class="text-blue-600 underline">${f.file_name}</a><div class="text-sm text-gray-600">${new Date(f.uploaded_at).toLocaleString('pl-PL')}</div>`;
+      filesList.appendChild(item);
+    });
+  }
+
+  loadFiles();
 });

@@ -179,6 +179,7 @@
                 <button class="tab-button active" data-tab="notes"><i class="fas fa-sticky-note"></i> Notatki</button>
                 <button class="tab-button" data-tab="email"><i class="fas fa-envelope"></i> E-maile</button>
                 <button class="tab-button" data-tab="tasks"><i class="fas fa-tasks"></i> Zadania</button>
+                <button class="tab-button" data-tab="files"><i class="fas fa-paperclip"></i> Pliki</button>
             </div>
             <div class="tab-content">
                 <div class="tab-pane active" id="notes">
@@ -216,9 +217,14 @@
                     </div>
                     <div id="tasks-list" class="space-y-4"></div>
                 </div>
+                <div class="tab-pane" id="files">
+                    <div id="files-list" class="space-y-2"></div>
+                </div>
             </div>
         </div>
     </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase.js"></script>
 <script src="assets/js/contact_details.js"></script>
 </body>
 </html>
