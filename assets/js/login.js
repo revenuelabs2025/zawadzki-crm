@@ -35,9 +35,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 
-        const { data, error } = await window.supabaseClient
+        const { data: sessionData, error: signInError } = await window.supabaseClient.auth.signInWithPassword({
+            email: username,
+            password: password
+        });
+
+        if (signInError) {
+            console.error('Login error:', signInError);
+            showToast(signInError.message || 'Nieprawidłowy login lub hasło.', 'error');
+            return;
+        }
+
+        const { data: { user } } = await window.supabaseClient.auth.getUser();
+
+        const { data: profileData, error: profileError } = await window.supabaseClient
             .from('profiles')
             .select('id, full_name')
+
             .eq('login', username)
             .eq('pass', password);
 
@@ -61,5 +75,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.location.href = 'index.html';
             }, 1000);
         }
+
+        localStorage.setItem('currentUser', JSON.stringify(profileData));
+        showToast('Logowanie pomyślne!', 'success');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
     });
 });

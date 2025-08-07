@@ -34,9 +34,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = passwordInput.value.trim();
         const fullName = fullNameInput.value.trim();
 
-        const { error } = await window.supabaseClient
-            .from('profiles')
-            .insert({ full_name: fullName, login: login, pass: password });
+        const { data, error } = await window.supabaseClient.auth.signUp({
+            email: login,
+            password: password,
+            options: {
+                data: { full_name: fullName }
+            }
+        });
 
         if (error) {
             console.error('Registration error:', error);

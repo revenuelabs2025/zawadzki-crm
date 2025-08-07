@@ -4,6 +4,6 @@ create table if not exists files (
   entity_id uuid,
   file_name text,
   file_url text,
-  uploaded_by integer references profiles(id),
+  uploaded_by uuid references profiles(id),
   uploaded_at timestamptz default now()
 );
