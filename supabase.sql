@@ -6,6 +6,21 @@ create table if not exists public.profiles (
   created_at timestamptz default now()
 );
 
+-- Allow anonymous access for simple login/registration flows
+alter table if exists public.profiles enable row level security;
+
+-- Permit anyone (anon) to read profile rows
+create policy "profiles_select_anon" on public.profiles
+for select
+to anon
+using (true);
+
+-- Permit anyone (anon) to create new profile rows
+create policy "profiles_insert_anon" on public.profiles
+for insert
+to anon
+with check (true);
+
 create table if not exists public.stages (
   id uuid primary key default gen_random_uuid(),
   name text unique not null,

@@ -42,7 +42,10 @@ document.addEventListener('DOMContentLoaded', function() {
             .eq('pass', password)
             .single();
 
-        if (error || !data) {
+        if (error) {
+            console.error('Login error:', error);
+            showToast(error.message || 'Nieprawidłowy login lub hasło.', 'error');
+        } else if (!data) {
             showToast('Nieprawidłowy login lub hasło.', 'error');
         } else {
             localStorage.setItem('currentUser', JSON.stringify(data));
