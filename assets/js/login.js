@@ -43,7 +43,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (error) {
             console.error('Login error:', error);
-            showToast(error.message || 'Nieprawidłowy login lub hasło.', 'error');
+            console.error('Status:', error.status);
+            console.error('Details:', error.details);
+            console.error('Hint:', error.hint);
+            if (error.status === 401 || error.status === 403) {
+                showToast('Brak uprawnień do wykonania tej operacji.', 'error');
+            } else {
+                showToast(error.message || 'Nieprawidłowy login lub hasło.', 'error');
+            }
         } else if (!data || data.length === 0) {
             showToast('Nieprawidłowy login lub hasło.', 'error');
         } else {

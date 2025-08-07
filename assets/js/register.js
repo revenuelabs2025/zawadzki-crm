@@ -39,7 +39,15 @@ document.addEventListener('DOMContentLoaded', function() {
             .insert({ full_name: fullName, login: login, pass: password });
 
         if (error) {
-            showToast(error.message, 'error');
+            console.error('Registration error:', error);
+            console.error('Status:', error.status);
+            console.error('Details:', error.details);
+            console.error('Hint:', error.hint);
+            if (error.status === 401 || error.status === 403) {
+                showToast('Brak uprawnień do wykonania tej operacji.', 'error');
+            } else {
+                showToast(error.message, 'error');
+            }
         } else {
             showToast('Rejestracja pomyślna!', 'success');
         }
