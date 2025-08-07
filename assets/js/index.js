@@ -382,7 +382,9 @@
         const cancelAddOffer = document.getElementById("cancel-add-offer");
         const closeAddOffer = document.getElementById("close-add-offer");
         const addOfferForm = document.getElementById("add-offer-form");
-        const offerContactSelect = document.getElementById("offer-contact");
+        const offerStageSelect = document.getElementById("offer-stage");
+        const companyDatalist = document.getElementById("company-options");
+        const contactDatalist = document.getElementById("contact-options");
 
         // --- CONFIG ---
         const techIcons = {
@@ -410,14 +412,42 @@
           Dostawca: "bg-indigo-100 text-indigo-800",
         };
 
-        if (offerContactSelect) {
-          contacts.forEach((contact) => {
+        function populateStageSelect() {
+          if (!offerStageSelect) return;
+          offerStageSelect.innerHTML = "";
+          stages.forEach((stage) => {
+            const count = deals.filter((d) => d.stage === stage.id).length;
             const option = document.createElement("option");
-            option.value = contact.id;
-            option.textContent = contact.name;
-            offerContactSelect.appendChild(option);
+            option.value = stage.id;
+            option.textContent = `${stage.name} (${count})`;
+            offerStageSelect.appendChild(option);
           });
         }
+
+        function populateContactDatalist() {
+          if (!contactDatalist) return;
+          contactDatalist.innerHTML = "";
+          contacts.forEach((contact) => {
+            const option = document.createElement("option");
+            option.value = contact.name;
+            contactDatalist.appendChild(option);
+          });
+        }
+
+        function populateCompanyDatalist() {
+          if (!companyDatalist) return;
+          companyDatalist.innerHTML = "";
+          const companies = [...new Set(contacts.map((c) => c.company))];
+          companies.forEach((company) => {
+            const option = document.createElement("option");
+            option.value = company;
+            companyDatalist.appendChild(option);
+          });
+        }
+
+        populateContactDatalist();
+        populateCompanyDatalist();
+        populateStageSelect();
 
         // --- HELPER FUNCTIONS ---
         function formatCurrency(value) {
@@ -624,6 +654,9 @@
         if (addNewButton) {
           addNewButton.addEventListener("click", () => {
             if (addOfferModal) {
+              populateStageSelect();
+              populateContactDatalist();
+              populateCompanyDatalist();
               addOfferModal.classList.remove("hidden");
             } else if (kanbanView && kanbanView.classList.contains("hidden")) {
               showToast(

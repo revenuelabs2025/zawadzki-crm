@@ -129,194 +129,110 @@
         <form id="add-offer-form" class="space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Nazwa inwestycji <span class="text-red-500">*</span></label
-              >
-              <input
-                type="text"
-                id="offer-name"
-                required
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
+              <label class="block text-sm font-medium text-gray-700">Nazwa inwestycji <span class="text-red-500">*</span></label>
+              <input type="text" id="offer-name" required class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Właściciel oferty <span class="text-red-500">*</span></label
-              >
-              <select
-                id="offer-owner"
-                required
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              >
+              <label class="block text-sm font-medium text-gray-700">Typ inwestora</label>
+              <select id="offer-investor-type" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                 <option value="">Wybierz</option>
-                <option>Jan Kowalski</option>
-                <option>Agnieszka Nowak</option>
-                <option>Piotr Wiśniewski</option>
+                <option>Komercyjny</option>
+                <option>Publiczny</option>
+                <option>Prywatny</option>
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Status <span class="text-red-500">*</span></label
-              >
-              <select
-                id="offer-status"
-                required
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              >
+              <label class="block text-sm font-medium text-gray-700">Etap lejka sprzedażowego</label>
+              <select id="offer-stage" class="mt-1 block w-full border border-gray-300 rounded-md p-2"></select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Typ obiektu</label>
+              <select id="offer-object-type" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                 <option value="">Wybierz</option>
-                <option>Analiza techniczna</option>
-                <option>Wstępny kosztorys</option>
-                <option>Oferta handlowa wysłana</option>
-                <option>Negocjacje / rewizje</option>
-                <option>Wstrzymane</option>
-                <option>Wygrane</option>
-                <option>Przegrane</option>
+                <option>Hala</option>
+                <option>Biurowiec</option>
+                <option>Magazyn</option>
+                <option>Inny</option>
               </select>
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Firma</label
-              >
-              <input
-                type="text"
-                id="offer-company"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Data utworzenia</label
-              >
-              <input
-                type="date"
-                id="offer-open-date"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Deadline oferty</label
-              >
-              <input
-                type="date"
-                id="offer-deadline"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Wartość oferty</label
-              >
-              <input
-                type="number"
-                id="offer-value"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Rodzaj inwestycji</label
-              >
-              <input
-                type="text"
-                id="offer-investment-type"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Typ dachu</label
-              >
-              <input
-                type="text"
-                id="offer-roof-type"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Typ elewacji</label
-              >
-              <input
-                type="text"
-                id="offer-facade-type"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Powierzchnia dachu</label
-              >
-              <input
-                type="number"
-                id="offer-roof-area"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Powierzchnia elewacji</label
-              >
-              <input
-                type="number"
-                id="offer-facade-area"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Lokalizacja</label
-              >
-              <input
-                type="text"
-                id="offer-location"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Miejscowość</label
-              >
-              <input
-                type="text"
-                id="offer-city"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Województwo</label
-              >
-              <input
-                type="text"
-                id="offer-voivodeship"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Powiązany kontakt</label
-              >
-              <select
-                id="offer-contact"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              >
+              <label class="block text-sm font-medium text-gray-700">Technologia dachu</label>
+              <select id="offer-roof-tech" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
                 <option value="">Wybierz</option>
+                <option>PVC</option>
+                <option>TPO</option>
+                <option>EPDM</option>
+                <option>Bitumen</option>
+                <option>Zielony</option>
+                <option>Stalowa obudowa</option>
+                <option>Inne</option>
               </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Rodzaj konstrukcji</label>
+              <select id="offer-structure-type" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                <option value="">Wybierz</option>
+                <option>Stalowa</option>
+                <option>Żelbetowa</option>
+                <option>Drewniana</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Rodzaj termoizolacji</label>
+              <select id="offer-insulation-type" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                <option value="">Wybierz</option>
+                <option>Wełna</option>
+                <option>Styropian</option>
+                <option>PIR</option>
+                <option>Inna</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Powierzchnia</label>
+              <input type="number" id="offer-area" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Lokalizacja - miejscowość</label>
+              <input type="text" id="offer-city" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Lokalizacja - województwo</label>
+              <input type="text" id="offer-voivodeship" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Planowana data rozpoczęcia robót</label>
+              <input type="date" id="offer-start-date" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Wartość inwestycji</label>
+              <input type="number" id="offer-value" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Źródło pozyskania</label>
+              <select id="offer-acquisition-source" class="mt-1 block w-full border border-gray-300 rounded-md p-2">
+                <option value="">Wybierz</option>
+                <option>Polecenie</option>
+                <option>Marketing</option>
+                <option>Zimny kontakt</option>
+                <option>Inne</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Powiązana firma</label>
+              <input type="text" id="offer-company" list="company-options" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+              <datalist id="company-options"></datalist>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Powiązany kontakt</label>
+              <input type="text" id="offer-contact" list="contact-options" class="mt-1 block w-full border border-gray-300 rounded-md p-2" />
+              <datalist id="contact-options"></datalist>
             </div>
           </div>
           <div class="flex justify-end space-x-2 pt-4">
-            <button
-              type="button"
-              id="cancel-add-offer"
-              class="px-4 py-2 bg-gray-200 rounded-md"
-            >
+            <button type="button" id="cancel-add-offer" class="px-4 py-2 bg-gray-200 rounded-md">
               Anuluj
             </button>
-            <button
-              type="submit"
-              class="px-4 py-2 brand-accent rounded-md text-white"
-            >
+            <button type="submit" class="px-4 py-2 brand-accent rounded-md text-white">
               Zapisz
             </button>
           </div>
