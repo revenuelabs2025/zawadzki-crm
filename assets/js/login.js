@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function() {
     loginForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        const username = usernameInput.value;
-        const password = passwordInput.value;
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
 
         const { data, error } = await window.supabaseClient
             .from('profiles')

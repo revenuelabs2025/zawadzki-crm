@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
     registerForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        const login = loginInput.value;
-        const password = passwordInput.value;
-        const fullName = fullNameInput.value;
+        const login = loginInput.value.trim();
+        const password = passwordInput.value.trim();
+        const fullName = fullNameInput.value.trim();
 
         const { error } = await window.supabaseClient
             .from('profiles')
