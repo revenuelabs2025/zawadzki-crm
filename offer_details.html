@@ -127,6 +127,17 @@
     </style>
 </head>
 <body>
+    <script>
+      const user = localStorage.getItem('currentUser');
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        try {
+          const parsed = JSON.parse(user);
+          window.currentUserId = parsed.id;
+        } catch (e) {}
+      }
+    </script>
     <div class="app-container">
         <!-- Sidebar -->
         <aside class="bg-white w-48 h-screen flex flex-col items-start py-4 shadow-md z-20">

@@ -2,7 +2,7 @@ create table tasks (
   id uuid primary key default gen_random_uuid(),
   title text,
   content text,
-  assigned_user_id uuid references profiles(id),
+  assigned_user_id integer references profiles(id),
   due_date date,
   completed boolean default false,
   contact_id uuid,
