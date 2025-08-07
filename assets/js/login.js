@@ -35,24 +35,35 @@ document.addEventListener('DOMContentLoaded', function() {
         const username = usernameInput.value;
         const password = passwordInput.value;
 
-        const { data, error } = await window.supabaseClient
+        const { data: sessionData, error: signInError } = await window.supabaseClient.auth.signInWithPassword({
+            email: username,
+            password: password
+        });
+
+        if (signInError) {
+            console.error('Login error:', signInError);
+            showToast(signInError.message || 'Nieprawidłowy login lub hasło.', 'error');
+            return;
+        }
+
+        const { data: { user } } = await window.supabaseClient.auth.getUser();
+
+        const { data: profileData, error: profileError } = await window.supabaseClient
             .from('profiles')
             .select('id, full_name')
-            .eq('login', username)
-            .eq('pass', password);
+            .eq('id', user.id)
+            .single();
 
-        if (error) {
-            console.error('Login error:', error);
-            showToast(error.message || 'Nieprawidłowy login lub hasło.', 'error');
-        } else if (!data || data.length === 0) {
-            showToast('Nieprawidłowy login lub hasło.', 'error');
-        } else {
-            const user = data[0];
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            showToast('Logowanie pomyślne!', 'success');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
+        if (profileError) {
+            console.error('Profile fetch error:', profileError);
+            showToast('Nie udało się pobrać profilu.', 'error');
+            return;
         }
+
+        localStorage.setItem('currentUser', JSON.stringify(profileData));
+        showToast('Logowanie pomyślne!', 'success');
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1000);
     });
 });

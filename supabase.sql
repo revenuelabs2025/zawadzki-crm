@@ -1,25 +1,20 @@
 create table if not exists public.profiles (
-  id serial primary key,
+  id uuid primary key references auth.users(id) on delete cascade,
   full_name text,
-  login text unique not null,
-  pass text not null,
   created_at timestamptz default now()
 );
 
--- Allow anonymous access for simple login/registration flows
 alter table if exists public.profiles enable row level security;
 
--- Permit anyone (anon) to read profile rows
-create policy "profiles_select_anon" on public.profiles
+create policy "profiles_select_authenticated" on public.profiles
 for select
-to anon
+to authenticated
 using (true);
 
--- Permit anyone (anon) to create new profile rows
-create policy "profiles_insert_anon" on public.profiles
+create policy "profiles_insert_authenticated" on public.profiles
 for insert
-to anon
-with check (true);
+to authenticated
+with check (auth.uid() = id);
 
 create table if not exists public.stages (
   id uuid primary key default gen_random_uuid(),
