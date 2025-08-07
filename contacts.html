@@ -18,6 +18,17 @@
     <link rel="stylesheet" href="assets/css/index.css" />
   </head>
   <body class="bg-gray-50 text-gray-800">
+    <script>
+      const user = localStorage.getItem('currentUser');
+      if (!user) {
+        window.location.href = 'login.html';
+      } else {
+        try {
+          const parsed = JSON.parse(user);
+          window.currentUserId = parsed.id;
+        } catch (e) {}
+      }
+    </script>
     <div class="flex h-screen">
       <!-- Collapsed Sidebar -->
       <aside

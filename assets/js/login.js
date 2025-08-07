@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginToast = document.getElementById('login-toast');
     const toastMessage = loginToast.querySelector('#toast-message');
 
+    // Clear any existing session on load
+    localStorage.removeItem('currentUser');
+
     function showToast(message, type = 'info') {
         toastMessage.textContent = message;
         loginToast.classList.remove('hidden');
@@ -32,15 +35,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const username = usernameInput.value;
         const password = passwordInput.value;
 
-        const { error } = await window.supabaseClient.auth.signInWithPassword({
-            email: username,
-            password: password
-        });
+        const { data, error } = await window.supabaseClient
+            .from('profiles')
+            .select('id, full_name')
+            .eq('login', username)
+            .eq('pass', password)
+            .single();
 
-        if (error) {
-            showToast('Nieprawidłowa nazwa użytkownika lub hasło.', 'error');
+        if (error || !data) {
+            showToast('Nieprawidłowy login lub hasło.', 'error');
         } else {
+            localStorage.setItem('currentUser', JSON.stringify(data));
             showToast('Logowanie pomyślne!', 'success');
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 1000);
         }
     });
 });

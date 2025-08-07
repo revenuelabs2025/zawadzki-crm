@@ -1,9 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const registerForm = document.getElementById('register-form');
-    const emailInput = document.getElementById('email');
+    const loginInput = document.getElementById('login');
     const passwordInput = document.getElementById('password');
     const fullNameInput = document.getElementById('full_name');
-    const roleInput = document.getElementById('role');
     const registerToast = document.getElementById('register-toast');
     const toastMessage = registerToast.querySelector('#toast-message');
 
@@ -31,28 +30,16 @@ document.addEventListener('DOMContentLoaded', function() {
     registerForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        const email = emailInput.value;
+        const login = loginInput.value;
         const password = passwordInput.value;
         const fullName = fullNameInput.value;
-        const role = roleInput.value;
 
-        const { data, error } = await window.supabaseClient.auth.signUp({
-            email: email,
-            password: password
-        });
+        const { error } = await window.supabaseClient
+            .from('profiles')
+            .insert({ full_name: fullName, login: login, pass: password });
 
         if (error) {
             showToast(error.message, 'error');
-            return;
-        }
-
-        const user = data.user;
-        const { error: profileError } = await window.supabaseClient
-            .from('profiles')
-            .insert({ id: user.id, full_name: fullName, role: role });
-
-        if (profileError) {
-            showToast('Rejestracja powiodła się, ale zapis profilu nie powiódł się.', 'error');
         } else {
             showToast('Rejestracja pomyślna!', 'success');
         }

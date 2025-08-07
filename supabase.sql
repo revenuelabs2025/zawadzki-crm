@@ -1,3 +1,11 @@
+create table if not exists public.profiles (
+  id serial primary key,
+  full_name text,
+  login text unique not null,
+  pass text not null,
+  created_at timestamptz default now()
+);
+
 create table if not exists public.stages (
   id uuid primary key default gen_random_uuid(),
   name text unique not null,
