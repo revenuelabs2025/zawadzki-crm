@@ -267,9 +267,6 @@
                 class="mt-1 block w-full border border-gray-300 rounded-md p-2"
               >
                 <option value="">Wybierz</option>
-                <option>Jan Kowalski</option>
-                <option>Agnieszka Nowak</option>
-                <option>Piotr Wiśniewski</option>
               </select>
             </div>
             <div>
@@ -282,10 +279,6 @@
                 class="mt-1 block w-full border border-gray-300 rounded-md p-2"
               >
                 <option value="">Wybierz</option>
-                <option>Klient</option>
-                <option>Potencjalny klient</option>
-                <option>Podwykonawca</option>
-                <option>Dostawca</option>
               </select>
             </div>
             <div>
@@ -300,21 +293,12 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700"
-                >Adres email</label
+                >Adres email <span class="text-red-500">*</span></label
               >
               <input
                 type="email"
                 id="contact-email"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Strona www</label
-              >
-              <input
-                type="url"
-                id="contact-website"
+                required
                 class="mt-1 block w-full border border-gray-300 rounded-md p-2"
               />
             </div>
@@ -360,26 +344,22 @@
               <label class="block text-sm font-medium text-gray-700"
                 >Województwo</label
               >
-              <input
-                type="text"
-                id="contact-voivodeship"
-                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700"
-                >Źródło pozyskania <span class="text-red-500">*</span></label
-              >
               <select
-                id="contact-source"
-                required
+                id="contact-voivodeship"
                 class="mt-1 block w-full border border-gray-300 rounded-md p-2"
               >
                 <option value="">Wybierz</option>
-                <option>Internet</option>
-                <option>Polecenie</option>
-                <option>Targi</option>
-                <option>Inne</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700"
+                >Źródło pozyskania</label
+              >
+              <select
+                id="contact-source"
+                class="mt-1 block w-full border border-gray-300 rounded-md p-2"
+              >
+                <option value="">Wybierz</option>
               </select>
             </div>
           </div>
