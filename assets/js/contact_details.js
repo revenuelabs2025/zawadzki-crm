@@ -31,6 +31,19 @@ document.addEventListener('DOMContentLoaded', () => {
       note.innerHTML = `<div class="text-sm text-gray-600 mb-1">Dawid Śmietański – ${date}</div><div>${text}</div>`;
       notesList.prepend(note);
       newNoteInput.value = '';
+
+      // Persist note
+      const entityId = new URLSearchParams(window.location.search).get('id');
+      const userId = window.currentUserId || null;
+      if (window.supabaseClient && entityId && userId) {
+        window.supabaseClient.from('notes').insert({
+          id: crypto.randomUUID(),
+          entity_type: 'contact',
+          entity_id: entityId,
+          user_id: userId,
+          content: text
+        });
+      }
     });
   }
 
