@@ -286,18 +286,68 @@ if (addTaskBtn && newTaskTitle && newTaskContent && newTaskUser && newTaskDate &
     const addFileBtn = document.getElementById('add-file-btn');
     const fileInput = document.getElementById('file-input');
     const filesList = document.getElementById('files-list');
+    const bucketName = 'crm-files';
+    const offerId = new URLSearchParams(window.location.search).get('id') || '00000000-0000-0000-0000-000000000000';
+
+    async function ensureBucket() {
+      const { error } = await sb.storage.createBucket(bucketName, { public: true });
+      if (error && !error.message.includes('already exists')) {
+        console.error('Bucket creation error:', error.message);
+      }
+    }
+
+    async function loadFiles() {
+      const { data, error } = await sb
+        .from('files')
+        .select('*')
+        .eq('entity_type', 'offer')
+        .eq('entity_id', offerId)
+        .order('uploaded_at', { ascending: false });
+
+      if (error) {
+        console.error('Error loading files:', error.message);
+        return;
+      }
+      filesList.innerHTML = '';
+      data.forEach(f => {
+        const item = document.createElement('div');
+        item.className = 'border p-3 rounded flex justify-between';
+        item.innerHTML = `<a href="${f.file_url}" target="_blank" class="text-blue-600 underline">${f.file_name}</a><div class="text-sm text-gray-600">${new Date(f.uploaded_at).toLocaleString('pl-PL')}</div>`;
+        filesList.appendChild(item);
+      });
+    }
+
+    async function uploadSelectedFile(file) {
+      const filePath = `${offerId}/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await sb.storage.from(bucketName).upload(filePath, file);
+      if (uploadError) {
+        console.error('Upload error:', uploadError.message);
+        return;
+      }
+      const { data: urlData } = sb.storage.from(bucketName).getPublicUrl(filePath);
+      const { error: insertError } = await sb.from('files').insert({
+        entity_type: 'offer',
+        entity_id: offerId,
+        file_name: file.name,
+        file_url: urlData.publicUrl,
+        uploaded_by: null
+      });
+      if (insertError) {
+        console.error('Metadata insert error:', insertError.message);
+      }
+      await loadFiles();
+    }
 
     if (addFileBtn && fileInput && filesList) {
       addFileBtn.addEventListener('click', () => fileInput.click());
-      fileInput.addEventListener('change', () => {
+      fileInput.addEventListener('change', async () => {
         const file = fileInput.files[0];
         if (!file) return;
-        const item = document.createElement('div');
-        item.className = 'border p-3 rounded flex justify-between';
-        item.innerHTML = `<div>${file.name}</div><div class="text-sm text-gray-600">${file.type || 'brak'} – ${(file.size / 1024).toFixed(1)} KB</div>`;
-        filesList.appendChild(item);
+        await uploadSelectedFile(file);
         fileInput.value = '';
       });
+      ensureBucket();
+      loadFiles();
     }
 
     function initRFQ() {
