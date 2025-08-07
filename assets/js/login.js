@@ -39,16 +39,16 @@ document.addEventListener('DOMContentLoaded', function() {
             .from('profiles')
             .select('id, full_name')
             .eq('login', username)
-            .eq('pass', password)
-            .single();
+            .eq('pass', password);
 
         if (error) {
             console.error('Login error:', error);
             showToast(error.message || 'Nieprawidłowy login lub hasło.', 'error');
-        } else if (!data) {
+        } else if (!data || data.length === 0) {
             showToast('Nieprawidłowy login lub hasło.', 'error');
         } else {
-            localStorage.setItem('currentUser', JSON.stringify(data));
+            const user = data[0];
+            localStorage.setItem('currentUser', JSON.stringify(user));
             showToast('Logowanie pomyślne!', 'success');
             setTimeout(() => {
                 window.location.href = 'index.html';
