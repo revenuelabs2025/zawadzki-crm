@@ -1,4 +1,10 @@
-document.addEventListener('DOMContentLoaded', () => {
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+document.addEventListener('DOMContentLoaded', async () => {
   const tabButtons = document.querySelectorAll('.tab-button');
   const tabPanes = document.querySelectorAll('.tab-pane');
 
@@ -102,99 +108,115 @@ document.addEventListener('DOMContentLoaded', () => {
   const tasksList = document.getElementById('tasks-list');
 
   if (addTaskBtn && newTaskTitle && newTaskContent && newTaskUser && newTaskDate && tasksList) {
-    const crmUsers = ['Dawid Śmietański', 'Magda Cieciorowska', 'Damian Zawadzki', 'Łukasz Zawadzki', 'Igor Dąbrowski', 'Klaudia Brożyna'];
-    crmUsers.forEach(user => {
-      const opt = document.createElement('option');
-      opt.value = user;
-      opt.textContent = user;
-      newTaskUser.appendChild(opt);
-    });
+    const contactId = new URLSearchParams(window.location.search).get('id');
+    let tasks = [];
+    let usersMap = {};
 
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [
-      { title: 'Oddzwonić do klienta', content: '', user: 'Łukasz Zawadzki', dueDate: '2024-06-01', completed: false },
-      { title: 'Wysłać prezentację', content: '', user: 'Igor Dąbrowski', dueDate: '2024-04-01', completed: false },
-      { title: 'Przygotować ofertę', content: '', user: 'Klaudia Brożyna', dueDate: '2024-03-20', completed: true }
-    ];
-
-    function saveTasks() {
-      localStorage.setItem('tasks', JSON.stringify(tasks));
+    async function loadUsers() {
+      const { data } = await db.from('profiles').select('id, full_name');
+      if (data) {
+        newTaskUser.innerHTML = '';
+        data.forEach(user => {
+          usersMap[user.id] = user.full_name;
+          const opt = document.createElement('option');
+          opt.value = user.id;
+          opt.textContent = user.full_name;
+          newTaskUser.appendChild(opt);
+        });
+      }
     }
 
     function getStatus(task) {
       const today = new Date().setHours(0, 0, 0, 0);
-      const due = new Date(task.dueDate).setHours(0, 0, 0, 0);
+      const due = new Date(task.due_date).setHours(0, 0, 0, 0);
       if (task.completed) return { text: 'wykonane', color: 'bg-green-100 text-green-800' };
       if (due < today) return { text: 'przeterminowane', color: 'bg-red-100 text-red-800' };
       return { text: 'oczekujące', color: 'bg-yellow-100 text-yellow-800' };
     }
 
+    async function loadTasks() {
+      let query = db
+        .from('tasks')
+        .select('id, title, content, assigned_user_id, due_date, completed')
+        .order('due_date', { ascending: true });
+      if (contactId) query = query.eq('contact_id', contactId);
+      const { data } = await query;
+      tasks = data || [];
+      renderTasks();
+    }
+
     function renderTasks() {
       tasksList.innerHTML = '';
-      tasks.forEach((task, index) => {
+      tasks.forEach(task => {
         const status = getStatus(task);
         const wrapper = document.createElement('div');
         wrapper.className = 'border p-3 rounded flex justify-between items-start';
         wrapper.innerHTML = `
           <div>
-            <div class="font-medium">${task.title || task.text}</div>
-            <div class="text-sm text-gray-600">${task.user ? task.user + ' – ' : ''}Do ${new Date(task.dueDate).toLocaleDateString('pl-PL')}</div>
+            <div class="font-medium">${task.title}</div>
+            <div class="text-sm text-gray-600">${usersMap[task.assigned_user_id] ? usersMap[task.assigned_user_id] + ' – ' : ''}Do ${new Date(task.due_date).toLocaleDateString('pl-PL')}</div>
             ${task.content ? `<div class="text-sm mt-1">${task.content}</div>` : ''}
           </div>
           <div class="flex items-center space-x-2">
             <span class="px-2 py-1 rounded text-xs ${status.color}">${status.text}</span>
-            ${task.completed ? '' : `<button data-index="${index}" class="complete-task-btn bg-green-500 text-white text-xs px-2 py-1 rounded">Zakończ</button>`}
-            <button data-index="${index}" class="delete-task-btn bg-red-500 text-white text-xs px-2 py-1 rounded">Usuń</button>
+            ${task.completed ? '' : `<button data-id="${task.id}" class="complete-task-btn bg-green-500 text-white text-xs px-2 py-1 rounded">Zakończ</button>`}
+            <button data-id="${task.id}" class="delete-task-btn bg-red-500 text-white text-xs px-2 py-1 rounded">Usuń</button>
           </div>
         `;
         tasksList.appendChild(wrapper);
       });
 
       document.querySelectorAll('.complete-task-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const idx = btn.getAttribute('data-index');
-          tasks[idx].completed = true;
-          saveTasks();
-          renderTasks();
-        });
+        btn.addEventListener('click', () => completeTask(btn.getAttribute('data-id')));
       });
 
       document.querySelectorAll('.delete-task-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const idx = btn.getAttribute('data-index');
-          tasks.splice(idx, 1);
-          saveTasks();
-          renderTasks();
-        });
+        btn.addEventListener('click', () => deleteTask(btn.getAttribute('data-id')));
       });
     }
 
-    addTaskBtn.addEventListener('click', () => {
+    addTaskBtn.addEventListener('click', async () => {
       const title = newTaskTitle.value.trim();
       const content = newTaskContent.value.trim();
-      const user = newTaskUser.value;
+      const userId = newTaskUser.value;
       const date = newTaskDate.value;
-      if (!title || !user || !date) return;
-      tasks.push({ title, content, user, dueDate: date, completed: false });
-      saveTasks();
-      renderTasks();
+      if (!title || !userId || !date) return;
+      await db.from('tasks').insert({
+        title,
+        content,
+        assigned_user_id: userId,
+        due_date: date,
+        contact_id: contactId
+      });
+      await loadTasks();
       newTaskTitle.value = '';
       newTaskContent.value = '';
       newTaskDate.value = '';
       newTaskUser.selectedIndex = 0;
     });
 
+    async function completeTask(id) {
+      await db.from('tasks').update({ completed: true }).eq('id', id);
+      loadTasks();
+    }
+
+    async function deleteTask(id) {
+      await db.from('tasks').delete().eq('id', id);
+      loadTasks();
+    }
+
     function checkNotifications() {
       const today = new Date().toISOString().split('T')[0];
       tasks.forEach(task => {
-        if (!task.completed && task.dueDate === today && !task.notified) {
-          alert(`Masz zadanie na dziś: ${task.title || task.text}`);
+        if (!task.completed && task.due_date === today && !task.notified) {
+          alert(`Masz zadanie na dziś: ${task.title}`);
           task.notified = true;
         }
       });
-      saveTasks();
     }
 
-    renderTasks();
+    await loadUsers();
+    await loadTasks();
     checkNotifications();
     setInterval(checkNotifications, 60000);
   }
