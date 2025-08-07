@@ -1,10 +1,9 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const supabaseUrl = "https://your-project.supabase.co";
-  const supabaseAnonKey = "public-anon-key";
-  const supabaseClient = window.supabase.createClient(
-    supabaseUrl,
-    supabaseAnonKey
-  );
+  const supabaseClient = window.supabaseClient;
+  if (!supabaseClient) {
+    console.error("Supabase client not initialized");
+    return;
+  }
 
   let contacts = [];
   const contactsPerPage = 8;
@@ -47,9 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function loadSelectOptions() {
     await populateSelect(
-      "auth.users",
+      "profiles",
       document.getElementById("contact-owner"),
-      "email"
+      "full_name"
     );
     await populateSelect(
       "contact_types",
