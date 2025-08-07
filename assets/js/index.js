@@ -584,15 +584,24 @@
 
         // --- EVENT LISTENERS & NAVIGATION ---
         function addDragAndDropListeners() {
-          // Temporary: open first deal details page on click
-          const firstCard = document.getElementById("deal-1");
-          if (firstCard) {
-            firstCard.addEventListener("click", () => {
-              window.location.href = "offer_details.html";
-            });
-          }
-
           document.querySelectorAll('[draggable="true"]').forEach((card) => {
+            card.addEventListener("click", () => {
+              const id = parseInt(card.dataset.dealId);
+              const selected = deals.find((d) => d.id === id);
+              if (selected) {
+                const stageObj = stages.find((s) => s.id === selected.stage);
+                const selectedData = {
+                  ...selected,
+                  stageName: stageObj ? stageObj.name : "",
+                };
+                localStorage.setItem(
+                  "selectedOffer",
+                  JSON.stringify(selectedData),
+                );
+                window.location.href = "offer_details.html";
+              }
+            });
+
             card.addEventListener("dragstart", (e) => {
               e.dataTransfer.setData("text/plain", card.id);
               // Add a class to the dragged card for visual feedback
@@ -693,6 +702,35 @@
         if (addOfferForm) {
           addOfferForm.addEventListener("submit", (e) => {
             e.preventDefault();
+            const newDeal = {
+              id: Date.now(),
+              stage: document.getElementById("offer-stage").value,
+              projectName: document.getElementById("offer-name").value,
+              company: document.getElementById("offer-company").value,
+              roofTech:
+                document.getElementById("offer-roof-tech").value || "Inne",
+              areaM2:
+                parseFloat(document.getElementById("offer-area").value) || 0,
+              valueNet:
+                parseFloat(document.getElementById("offer-value").value) || 0,
+              probability: 0,
+              openDate: new Date().toISOString().split("T")[0],
+              expectedClose: "",
+              margin: 20,
+              startDate: document.getElementById("offer-start-date").value,
+              location: document.getElementById("offer-city").value,
+              investorType: document.getElementById("offer-investor-type").value,
+              objectType: document.getElementById("offer-object-type").value,
+              structureType:
+                document.getElementById("offer-structure-type").value,
+              insulationType:
+                document.getElementById("offer-insulation-type").value,
+              acquisitionSource:
+                document.getElementById("offer-acquisition-source").value,
+              contact: document.getElementById("offer-contact").value,
+            };
+            deals.push(newDeal);
+            renderBoard();
             addOfferModal.classList.add("hidden");
             addOfferForm.reset();
             showToast("Oferta została dodana");

@@ -155,26 +155,26 @@
                 </a>
             </div>
             <div class="offer-info-header">
-                <div class="offer-avatar">O1</div>
-                <h3>Nowy dach dla Biedronki</h3>
+                <div class="offer-avatar" id="detail-avatar">O1</div>
+                <h3 id="detail-name">Nowy dach dla Biedronki</h3>
             </div>
             <div class="info-group">
                 <div class="info-group-title">Informacje podstawowe</div>
-                <div class="info-item"><span class="info-label">Status:</span><span class="offer-status-badge">Analiza techniczna</span></div>
-                <div class="info-item"><span class="info-label">Właściciel:</span><span class="info-value">Jan Nowak</span></div>
-                <div class="info-item"><span class="info-label">Dodano:</span><span class="info-value">15.03.2024</span></div>
+                <div class="info-item"><span class="info-label">Status:</span><span id="detail-status" class="offer-status-badge">Analiza techniczna</span></div>
+                <div class="info-item"><span class="info-label">Właściciel:</span><span id="detail-owner" class="info-value">Jan Nowak</span></div>
+                <div class="info-item"><span class="info-label">Dodano:</span><span id="detail-added" class="info-value">15.03.2024</span></div>
             </div>
             <div class="info-group">
                 <div class="info-group-title">Szczegóły oferty</div>
-                <div class="info-item"><span class="info-label">Firma:</span><span class="info-value">Jeronimo Martins Polska S.A.</span></div>
-                <div class="info-item"><span class="info-label">Wartość netto:</span><span class="info-value">750 000 PLN</span></div>
-                <div class="info-item"><span class="info-label">Szacowana marża:</span><span class="info-value">20%</span></div>
-                <div class="info-item"><span class="info-label">Planowane rozpoczęcie:</span><span class="info-value">01.09.2025</span></div>
+                <div class="info-item"><span class="info-label">Firma:</span><span id="detail-company" class="info-value">Jeronimo Martins Polska S.A.</span></div>
+                <div class="info-item"><span class="info-label">Wartość netto:</span><span id="detail-value" class="info-value">750 000 PLN</span></div>
+                <div class="info-item"><span class="info-label">Szacowana marża:</span><span id="detail-margin" class="info-value">20%</span></div>
+                <div class="info-item"><span class="info-label">Planowane rozpoczęcie:</span><span id="detail-start" class="info-value">01.09.2025</span></div>
             </div>
             <div class="info-group">
                 <div class="info-group-title">Lokalizacja</div>
-                <div class="info-item"><span class="info-label">Miasto:</span><span class="info-value">Warszawa</span></div>
-                <div class="info-item"><span class="info-label">Typ inwestora:</span><span class="info-value">Komercyjny</span></div>
+                <div class="info-item"><span class="info-label">Miasto:</span><span id="detail-city" class="info-value">Warszawa</span></div>
+                <div class="info-item"><span class="info-label">Typ inwestora:</span><span id="detail-investor" class="info-value">Komercyjny</span></div>
             </div>
             <div class="offer-info-footer">
                 <button class="edit-offer-btn"><i class="fas fa-edit"></i> Edytuj ofertę</button>
@@ -303,6 +303,7 @@
             </div>
         </div>
 </div>
+<script src="assets/js/offer_info.js"></script>
 <script src="assets/js/offer_details.js"></script>
 </body>
 </html>
