@@ -25,13 +25,53 @@ document.addEventListener("DOMContentLoaded", function () {
     setTimeout(() => toast.classList.remove("show"), 3000);
   }
 
+  async function populateSelect(table, selectEl, labelKey = "name") {
+    if (!selectEl) return;
+    const { data, error } = await supabaseClient
+      .from(table)
+      .select(`id, ${labelKey}`)
+      .order(labelKey);
+
+    if (error) {
+      console.error(`Błąd pobierania ${table}:`, error);
+      return;
+    }
+
+    data.forEach((item) => {
+      const option = document.createElement("option");
+      option.value = item.id;
+      option.textContent = item[labelKey];
+      selectEl.appendChild(option);
+    });
+  }
+
+  async function loadSelectOptions() {
+    await populateSelect(
+      "auth.users",
+      document.getElementById("contact-owner"),
+      "email"
+    );
+    await populateSelect(
+      "contact_types",
+      document.getElementById("contact-type")
+    );
+    await populateSelect(
+      "voivodeships",
+      document.getElementById("contact-voivodeship")
+    );
+    await populateSelect(
+      "acquisition_sources",
+      document.getElementById("contact-source")
+    );
+  }
+
   async function loadContacts() {
     const { data, error } = await supabaseClient
       .from("contacts")
       .select(
-        "id, first_name, last_name, phone, email, type, last_activity_date, company:companies(name, address, city)"
+        "id, first_name, last_name, phone, email, company_name, address, city, last_activity_at, contact_type:contact_types(name)"
       )
-      .order("last_activity_date", { ascending: false });
+      .order("last_activity_at", { ascending: false });
 
     if (error) {
       console.error("Błąd pobierania kontaktów:", error);
@@ -41,14 +81,12 @@ document.addEventListener("DOMContentLoaded", function () {
     contacts = data.map((c) => ({
       id: c.id,
       name: `${c.first_name} ${c.last_name}`,
-      company: c.company?.name || "",
-      address: [c.company?.address, c.company?.city]
-        .filter(Boolean)
-        .join(", "),
+      company: c.company_name || "",
+      address: [c.address, c.city].filter(Boolean).join(", "),
       phone: c.phone,
       email: c.email,
-      type: c.type,
-      lastActivity: c.last_activity_date,
+      type: c.contact_type?.name || "",
+      lastActivity: c.last_activity_at,
     }));
 
     renderContacts();
@@ -154,30 +192,26 @@ document.addEventListener("DOMContentLoaded", function () {
       const [firstName, ...rest] = fullName.split(" ");
       const lastName = rest.join(" ");
 
-      const companyData = {
-        name: document.getElementById("contact-company").value.trim() || null,
-        nip: document.getElementById("contact-nip").value.trim() || null,
-        address: document.getElementById("contact-address").value.trim() || null,
-        city: document.getElementById("contact-city").value.trim() || null,
-        voivodeship:
-          document.getElementById("contact-voivodeship").value.trim() || null,
-        website: document.getElementById("contact-website").value.trim() || null,
-      };
-
       const contactData = {
         first_name: firstName || "",
         last_name: lastName || "",
+        owner_id: document.getElementById("contact-owner").value,
+        contact_type_id: document.getElementById("contact-type").value,
         phone: document.getElementById("contact-phone").value.trim() || null,
-        email: document.getElementById("contact-email").value.trim() || null,
-        type: document.getElementById("contact-type").value,
-        source: document.getElementById("contact-source").value,
-        last_activity_date: new Date().toISOString().split("T")[0],
+        email: document.getElementById("contact-email").value.trim(),
+        company_name: document.getElementById("contact-company").value.trim() || null,
+        nip: document.getElementById("contact-nip").value.trim() || null,
+        address: document.getElementById("contact-address").value.trim() || null,
+        city: document.getElementById("contact-city").value.trim() || null,
+        voivodeship_id: document.getElementById("contact-voivodeship").value || null,
+        acquisition_source_id: document.getElementById("contact-source").value || null,
+        created_at: new Date().toISOString(),
+        last_activity_at: new Date().toISOString(),
       };
 
-      const { error } = await supabaseClient.rpc("add_contact_with_company", {
-        company_data: companyData,
-        contact_data: contactData,
-      });
+      const { error } = await supabaseClient
+        .from("contacts")
+        .insert([contactData]);
 
       if (error) {
         console.error("Błąd dodawania kontaktu:", error);
@@ -192,6 +226,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  loadSelectOptions();
   loadContacts();
 });
 
