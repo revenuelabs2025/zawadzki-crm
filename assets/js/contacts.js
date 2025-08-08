@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("contact-type")
     );
     await populateSelect(
-      "voivodeships",
+      "voivodeship",
       document.getElementById("contact-voivodeship")
     );
     await populateSelect(
