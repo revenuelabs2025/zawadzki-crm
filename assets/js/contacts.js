@@ -48,7 +48,11 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectsLoaded = false;
 
   async function loadSelectOptions() {
-    await populateSelect("profiles", document.getElementById("contact-owner"));
+    await populateSelect(
+      "profiles",
+      document.getElementById("contact-owner"),
+      "full_name"
+    );
     await populateSelect(
       "contact_types",
       document.getElementById("contact-type")
