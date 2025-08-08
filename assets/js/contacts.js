@@ -198,10 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const [firstName, ...rest] = fullName.split(" ");
       const lastName = rest.join(" ");
 
-      const ownerId = parseInt(
-        document.getElementById("contact-owner").value,
-        10,
-      );
+      const ownerId = document.getElementById("contact-owner").value;
       const email = document.getElementById("contact-email").value.trim();
 
       if (!fullName || !ownerId || !email) {
