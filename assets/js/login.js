@@ -1,9 +1,12 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('login-form');
     const loginInput = document.getElementById('login');
     const passwordInput = document.getElementById('password');
     const loginToast = document.getElementById('login-toast');
     const toastMessage = loginToast.querySelector('#toast-message');
+
+    const STATIC_LOGIN = 'admin@zis-zawadzki.pl';
+    const STATIC_PASSWORD = 'ZIS2025!';
 
     function showToast(message, type = 'info') {
         toastMessage.textContent = message;
@@ -26,30 +29,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
-    loginForm.addEventListener('submit', async function(event) {
+    loginForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
         const login = loginInput.value.trim();
         const password = passwordInput.value.trim();
 
-        const { data, error } = await window.supabaseClient.auth.signInWithPassword({
-            email: login,
-            password: password,
-        });
-
-        if (error) {
-            console.error('Login error:', error);
-            if (error.status === 401 || error.status === 403) {
-                showToast('Nieprawidłowe dane logowania.', 'error');
-            } else {
-                showToast(error.message, 'error');
-            }
-        } else {
-            localStorage.setItem('currentUser', JSON.stringify(data.user));
+        if (login === STATIC_LOGIN && password === STATIC_PASSWORD) {
+            localStorage.setItem('currentUser', JSON.stringify({ email: login }));
             showToast('Zalogowano pomyślnie!', 'success');
             setTimeout(() => {
                 window.location.href = 'index.html';
             }, 1000);
+        } else {
+            showToast('Nieprawidłowe dane logowania.', 'error');
         }
     });
 });
